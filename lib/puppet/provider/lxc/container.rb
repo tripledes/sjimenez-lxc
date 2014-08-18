@@ -3,7 +3,7 @@ require 'lxc'
 Puppet::Type.type(:lxc).provide(:container) do
   def create
     c = LXC::Container.new(resource[:name])
-    c.create(resource[:template])
+    c.create(resource[:template], resource[:storage_backend].to_s, self.symbolize_hash(resource[:storage_options]))
 
     case resource[:state]
     when :running
@@ -64,5 +64,21 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def status
     LXC::Container.new(resource[:name]).state
+  end
+
+  def symbolize_hash hash
+    result = {}
+    if hash.nil?
+      return nil
+    else
+      hash.each do |k,v|
+        if v.kind_of?Hash
+          result[k.to_sym] = self.symbolize_hash v
+        else
+          result[k.to_sym] = k == 'fssize' ? v.to_i : v
+        end
+      end
+    end
+    result
   end
 end
