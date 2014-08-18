@@ -37,7 +37,9 @@ Puppet::Type.newtype(:lxc) do
   end
 
   newproperty(:state) do
-    desc 'Whether a container should be running, stopped, frozen or absent.'
+    desc 'Whether a container should be running, stopped or frozen.'
+
+    defaultto :running
 
     newvalue(:running, :event => :container_started) do
       provider.start

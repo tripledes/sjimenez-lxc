@@ -1,6 +1,9 @@
 require 'lxc'
 
 Puppet::Type.type(:lxc).provide(:container) do
+
+  defaultfor :operatingsystem => :ubuntu
+
   def create
     c = LXC::Container.new(resource[:name])
     c.create(resource[:template], resource[:storage_backend].to_s, self.symbolize_hash(resource[:storage_options]))
