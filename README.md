@@ -4,14 +4,8 @@
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
-3. [Setup](#setup)
-    * [What lxc affects](#what-lxc-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with lxc](#beginning-with-lxc)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Limitations - OS compatibility, etc.](#limitations)
 
 ## Overview
 
