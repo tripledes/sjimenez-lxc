@@ -40,6 +40,7 @@ bindings installed, the types should work as expected.
 
 ## TODO
 
+* Improve current lxc-container provider.
 * Add lxc-cgroup provider.
 * Test everything.
 * Add support for other distros.
