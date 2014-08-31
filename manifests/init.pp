@@ -1,41 +1,79 @@
 # == Class: lxc
 #
-# Full description of class lxc here.
+# This class installs the requirements for managing LXC containers.
 #
 # === Parameters
 #
-# Document parameters here.
+# [*lxc_ruby_bindings_provider*]
+#   Provider used to install LXC ruby bindings. Defaults to gem.
 #
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*lxc_ruby_bindings_package*]
+#   Name for the LXC ruby bindings. Defaults to ruby-lxc.
 #
-# === Variables
+# [*lxc_ruby_bindings_version*]
+#   Version for LXC ruby bindings. Defaults to 1.2.0.
 #
-# Here you should define a list of variables that this module would require.
+# [*lxc_lxc_package*]
+#   Package for installing lxc tools and libraries. Defaults to lxc.
 #
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
+# [*lxc_lxc_version*]
+#   Version for *lxc_lxc_package*. Defaults to 1.0.5-0ubuntu0.1
+#
+# [*lxc_lxc_service*]
+#   Name for lxc service. Defaults to lxc.
+#
+# [*lxc_lxc_service_ensure*]
+#   Defines state for LXC service. Defaults to running.
+#
+# [*lxc_lxc_service_enabled*]
+#   Enables/disables LXC service on boot time. Defaults to true.
 #
 # === Examples
 #
-#  class { lxc:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#  }
+#  include lxc
 #
 # === Authors
 #
-# Author Name <author@domain.com>
+# Author Name <tripledes@gmail.com>
 #
 # === Copyright
 #
-# Copyright 2014 Your name here, unless otherwise noted.
+# Copyright 2014 Sergio Jimenez, unless otherwise noted.
 #
-class lxc {
+class lxc (
+  $lxc_ruby_bindings_provider = $lxc::params::lxc_ruby_bindings_provider,
+  $lxc_ruby_bindings_package  = $lxc::params::lxc_ruby_bindings_package,
+  $lxc_ruby_bindings_version  = $lxc::params::lxc_ruby_bindings_version,
+  $lxc_lxc_package            = $lxc::params::lxc_lxc_package,
+  $lxc_lxc_version            = $lxc::params::lxc_lxc_version,
+  $lxc_lxc_service            = $lxc::params::lxc_lxc_service,
+  $lxc_lxc_service_ensure     = $lxc::params::lxc_lxc_service_ensure,
+  $lxc_lxc_service_enabled    = $lxc::params::lxc_lxc_service_enabled
+) inherits lxc::params {
 
+  $lxc_ruby_bindings_deps = $lxc_ruby_bindings_provider ? {
+    gem     => $lxc::params::lxc_ruby_bindings_gem_deps,
+    default => ['']
+  }
 
+  package { $lxc_lxc_package:
+    ensure => $lxc_lxc_version,
+  }
+
+  package { $lxc_ruby_bindings_deps:
+    ensure => latest,
+  }
+
+  package { 'lxc-bindings':
+    ensure   => $lxc_ruby_bindings_version,
+    name     => $lxc_ruby_bindings_package,
+    provider => $lxc_ruby_bindings_provider,
+    require  => Package[$lxc_lxc_package, $lxc_ruby_bindings_deps],
+  }
+
+  service { $lxc_lxc_service:
+    ensure => $lxc_lxc_service_ensure,
+    enable => $lxc_lxc_service_enabled,
+  }
 }
+
