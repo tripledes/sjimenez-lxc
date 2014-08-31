@@ -58,5 +58,9 @@ Puppet::Type.newtype(:lxc) do
     end
 
   end
+
+  autorequire(:package) do
+    ['lxc-bindings']
+  end
 end
 

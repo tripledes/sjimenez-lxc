@@ -1,8 +1,7 @@
-require 'lxc'
-
 Puppet::Type.type(:lxc).provide(:container) do
 
   defaultfor :operatingsystem => :ubuntu
+  confine :feature => :lxc, :kernel => 'Linux'
 
   def create
     c = LXC::Container.new(resource[:name])
