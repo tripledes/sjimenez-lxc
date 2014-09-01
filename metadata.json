@@ -6,6 +6,21 @@
   "license": "Apache 2.0",
   "source": "https://github.com/tripledes/sjimenez-lxc",
   "project_page": "https://github.com/tripledes/sjimenez-lxc",
-  "issues_url": "https://github.com/tripledes/sjimenez-lxc/issues"
+  "issues_url": "https://github.com/tripledes/sjimenez-lxc/issues",
+  "operatingsystem_support": [
+     {
+       "operatingsystem": "Ubuntu",
+       "operatingsystemrelease": [
+         "14.04"
+       ]
+     }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "dependencies": [ ]
 }
 
