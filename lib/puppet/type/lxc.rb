@@ -30,6 +30,8 @@ Puppet::Type.newtype(:lxc) do
         fail('storage_options is not a Hash')
       end
 
+      # very basic test, keys should be validated with relationship,
+      # it's wrong to have dir and lvname in same hash
       value.keys.each do |k|
          fail("#{k} is not a valid storage option") unless ['dir', 'lvname', 'vgname', 'thinpool', 'fstype', 'fssize'].include?k
       end
