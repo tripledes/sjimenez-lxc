@@ -42,6 +42,7 @@ GEM
     rspec-puppet (1.0.1)
       rspec
     rspec-support (3.0.4)
+    ruby-lxc (1.2.0)
 
 PLATFORMS
   ruby
@@ -51,3 +52,4 @@ DEPENDENCIES
   puppet-lint
   puppetlabs_spec_helper
   rspec-puppet
+  ruby-lxc
