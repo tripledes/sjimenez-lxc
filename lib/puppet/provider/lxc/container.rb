@@ -3,9 +3,18 @@ Puppet::Type.type(:lxc).provide(:container) do
   defaultfor :operatingsystem => :ubuntu
   confine :feature => :lxc, :kernel => 'Linux'
 
+  attr_accessor :container
+
   def create
-    c = LXC::Container.new(resource[:name])
-    c.create(resource[:template], resource[:storage_backend].to_s, symbolize_hash(resource[:storage_options]))
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
+
+    begin
+      @container.create(resource[:template], resource[:storage_backend].to_s, symbolize_hash(resource[:storage_options]))
+    rescue StandardError => e
+      fail("Failed to create #{@resource[:name]}: #{e.message}")
+    end
 
     case resource[:state]
     when :running
@@ -18,10 +27,16 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def exists?
-    LXC::Container.new(resource[:name]).defined?
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
+    @container.defined?
   end
 
   def destroy
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
 
     case self.status
     when :running
@@ -31,41 +46,82 @@ Puppet::Type.type(:lxc).provide(:container) do
       self.stop
     end
 
-    LXC::Container.new(resource[:name]).destroy
+    begin
+      @container.destroy
+    rescue StandardError => e
+      fail("Failed to destroy #{@resource[:name]}: #{e.message}")
+    end
+    true
   end
 
   def start
-    c = LXC::Container.new(resource[:name])
-
-    if self.status == :frozen
-      self.unfreeze
-    else
-      c.start
+    unless @container
+      @container = LXC::Container.new(resource[:name])
     end
-
-    c.wait(:running, @resource[:timeout])
+    begin
+      if self.status == :frozen
+        self.unfreeze
+      else
+        @container.start
+      end
+      @container.wait(:running, @resource[:timeout])
+    rescue StandardError => e
+      fail("Failed to start #{@resource[:name]}: #{e.message}")
+    end
+    true
   end
 
   def stop
-    c = LXC::Container.new(resource[:name])
-    c.stop
-    c.wait(:stopped, @resource[:timeout])
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
+
+    begin
+      @container.stop
+      @container.wait(:stopped, @resource[:timeout])
+    rescue StandardError => e
+      fail("Failed to stop #{@resource[:name]}: #{e.message}")
+    end
+    true
   end
 
   def freeze
-    c = LXC::Container.new(resource[:name])
-    c.freeze
-    c.wait(:frozen, @resource[:timeout])
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
+
+    begin
+      unless self.status == :frozen
+        @container.freeze
+        @container.wait(:frozen, @resource[:timeout])
+      end
+    rescue StandardError => e
+      fail("Failed to freeze #{@resource[:name]}: #{e.message}")
+    end
+    true
   end
 
   def unfreeze
-    c = LXC::Container.new(resource[:name])
-    c.unfreeze
-    c.wait(:running, @resource[:timeout])
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
+
+    begin
+      if self.status == :frozen
+        @container.unfreeze
+        @container.wait(:running, @resource[:timeout])
+      end
+    rescue StandardError => e
+      fail("Failed to unfreeze #{@resource[:name]}: #{e.message}")
+    end
+    true
   end
 
   def status
-    LXC::Container.new(resource[:name]).state
+    unless @container
+      @container = LXC::Container.new(resource[:name])
+    end
+    @container.state
   end
 
   private
