@@ -27,13 +27,19 @@ Puppet::Type.newtype(:lxc) do
 
     validate do |value|
       unless value.kind_of?Hash
-        fail('storage_options is not a Hash')
+        raise ArgumentError, "storage_options is #{value.class}, expected Hash"
       end
 
-      # very basic test, keys should be validated with relationship,
-      # it's wrong to have dir and lvname in same hash
-      value.keys.each do |k|
-         fail("#{k} is not a valid storage option") unless ['dir', 'lvname', 'vgname', 'thinpool', 'fstype', 'fssize'].include?k
+      if value['dir'] and value.size > 1
+        raise ArgumentError, 'cannot use more storage_options than dir'
+      elsif value['dir'].nil?
+        value.keys.each do |k|
+          raise ArgumentError, "#{k} is not a valid storage option" unless ['lvname', 'vgname', 'thinpool', 'fstype', 'fssize'].include?k
+        end
+      end
+
+      if value['dir'] and @resource[:storage_backend] != :dir
+        raise ArgumentError, 'storage_backend and storage_options do not match'
       end
     end
   end
@@ -58,7 +64,6 @@ Puppet::Type.newtype(:lxc) do
     def retrieve
       provider.status
     end
-
   end
 
   autorequire(:package) do
