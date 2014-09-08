@@ -7,16 +7,16 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def create
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
 
     begin
-      @container.create(resource[:template], resource[:storage_backend].to_s, symbolize_hash(resource[:storage_options]))
+      @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]))
     rescue StandardError => e
       fail("Failed to create #{@resource[:name]}: #{e.message}")
     end
 
-    case resource[:state]
+    case @resource[:state]
     when :running
       self.start
     when :frozen
@@ -28,14 +28,14 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def exists?
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
     @container.defined?
   end
 
   def destroy
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
 
     case self.status
@@ -56,7 +56,7 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def start
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
     begin
       if self.status == :frozen
@@ -73,7 +73,7 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def stop
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
 
     begin
@@ -87,7 +87,7 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def freeze
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
 
     begin
@@ -103,7 +103,7 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def unfreeze
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
 
     begin
@@ -119,7 +119,7 @@ Puppet::Type.type(:lxc).provide(:container) do
 
   def status
     unless @container
-      @container = LXC::Container.new(resource[:name])
+      @container = LXC::Container.new(@resource[:name])
     end
     @container.state
   end
