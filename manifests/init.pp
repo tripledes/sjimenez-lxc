@@ -34,7 +34,7 @@
 #
 # === Authors
 #
-# Author Name <tripledes@gmail.com>
+# Sergio Jimenez <tripledes@gmail.com>
 #
 # === Copyright
 #
@@ -76,4 +76,3 @@ class lxc (
     enable => $lxc_lxc_service_enabled,
   }
 }
-
