@@ -1,7 +1,7 @@
 ---
 language: ruby
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-lxc/stable
+  - sudo add-apt-repository ppa:ubuntu-lxc/stable -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq build-essential ruby-dev lxc-dev
 bundler_args: --without development
