@@ -1,8 +1,9 @@
 ---
 language: ruby
 before_install:
- - sudo apt-get update -qq
- - sudo apt-get install -qq build-essential ruby-dev lxc-dev
+  - sudo add-apt-repository ppa:ubuntu-lxc/stable
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq build-essential ruby-dev lxc-dev
 bundler_args: --without development
 script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation'"
 matrix:
