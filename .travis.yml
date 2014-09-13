@@ -4,13 +4,8 @@ before_install:
   - sudo add-apt-repository ppa:ubuntu-lxc/stable -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq build-essential ruby-dev lxc-dev
-gemfile:
-  - .gemfile
 bundler_args: --without development
 script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation'"
-rvm:
-  - 1.9.3
-  - 2.0.0
 matrix:
   fast_finish: true
   include:
