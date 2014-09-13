@@ -1,5 +1,7 @@
 # lxc
 
+[![Build Status](https://travis-ci.org/tripledes/sjimenez-lxc.png?branch=master)](https://travis-ci.org/tripledes/sjimenez-lxc)
+
 #### Table of Contents
 
 1. [Overview](#overview)
@@ -45,4 +47,3 @@ bindings installed, the types should work as expected.
 * Test everything.
 * Add support for other distros.
 * Add Beaker to the game.
-
