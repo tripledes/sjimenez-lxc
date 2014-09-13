@@ -8,6 +8,9 @@ gemfile:
   - .gemfile
 bundler_args: --without development
 script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation'"
+rvm:
+  - 1.9.3
+  - 2.0.0
 matrix:
   fast_finish: true
   include:
