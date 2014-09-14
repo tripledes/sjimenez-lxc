@@ -13,6 +13,11 @@ Puppet::Type.newtype(:lxc_interface) do
     desc 'Name of the container'
   end
 
+  newparam(:index) do
+    desc 'Index for interface configuration'
+    newvalues(/\d+/)
+  end
+
   newproperty(:link) do
     desc 'Host interface where to link the container interface'
   end
@@ -30,7 +35,7 @@ Puppet::Type.newtype(:lxc_interface) do
   newproperty(:vlan_id) do
     desc 'VLAN ID to use with network type is vlan'
     validate do |value|
-      unless value =~ /d+/
+      unless value =~ /\d+/
         raise ArgumentError, 'Invalid VLAN ID, it is not numeric'
       end
     end
@@ -80,5 +85,9 @@ Puppet::Type.newtype(:lxc_interface) do
 
   autorequire(:lxc) do
     [@resource[:container]]
+  end
+
+  validate do
+    raise ArgumentError, 'Index parameter is required' if self[:index].nil?
   end
 end
