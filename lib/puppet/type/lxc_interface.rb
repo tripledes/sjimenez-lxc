@@ -53,6 +53,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newproperty(:type) do
     desc 'Network type'
+    defaultto 'veth'
     validate do |value|
       unless ['veth', 'vlan', 'macvlan', 'phys'].include?value
         raise ArgumentError, 'Invalid network type'
