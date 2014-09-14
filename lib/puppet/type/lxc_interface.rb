@@ -24,6 +24,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newproperty(:flags) do
     desc 'Flags to set on the interface'
+    defaultto 'up'
     validate do |value|
       # do more flags exist?
       unless ['up', 'down'].include?value
@@ -89,5 +90,6 @@ Puppet::Type.newtype(:lxc_interface) do
 
   validate do
     raise ArgumentError, 'Index parameter is required' if self[:index].nil?
+    raise ArgumentError, 'Container parameter is required' if self[:container].nil?
   end
 end
