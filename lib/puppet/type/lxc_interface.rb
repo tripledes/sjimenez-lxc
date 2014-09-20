@@ -23,6 +23,7 @@ Puppet::Type.newtype(:lxc_interface) do
   end
 
   newproperty(:flags) do
+    # FIXME: It doesn't work for down...
     desc 'Flags to set on the interface'
     defaultto 'up'
     validate do |value|
