@@ -68,6 +68,8 @@ Puppet::Type.newtype(:lxc_interface) do
   newproperty(:ipv4) do
     desc 'IPv4 address'
     validate do |value|
+      # FIXME: Bindings return IP without mask, is it really needed? If so, might need
+      # to capture it attaching to the container and executing ip or ifconfig.
       begin
         ip = IPAddr.new(value)
       rescue ArgumentError
