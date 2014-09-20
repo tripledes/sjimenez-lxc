@@ -86,7 +86,7 @@ Puppet::Type.newtype(:lxc_interface) do
   end
 
   autorequire(:lxc) do
-    [@resource[:container]]
+    [self[:container]]
   end
 
   validate do
