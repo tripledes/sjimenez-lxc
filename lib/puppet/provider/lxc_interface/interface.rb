@@ -8,9 +8,9 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def create
     begin
       define_container
+      @container.set_config_item("lxc.network.#{@resource[:index]}.type", @resource[:type])
       @container.set_config_item("lxc.network.#{@resource[:index]}.name", @resource[:name])
       @container.set_config_item("lxc.network.#{@resource[:index]}.flags", @resource[:flags])
-      @container.set_config_item("lxc.network.#{@resource[:index]}.type", @resource[:type])
       @container.set_config_item("lxc.network.#{@resource[:index]}.link", @resource[:link]) unless @resource[:link].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id", @resource[:vlan_id]) unless @resource[:vlan_id].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode", @resource[:macvlan_mode]) unless @resource[:macvlan_mode].nil?
