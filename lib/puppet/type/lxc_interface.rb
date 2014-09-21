@@ -22,18 +22,6 @@ Puppet::Type.newtype(:lxc_interface) do
     desc 'Host interface where to link the container interface'
   end
 
-  newproperty(:flags) do
-    # FIXME: It doesn't work for down...
-    desc 'Flags to set on the interface'
-    defaultto 'up'
-    validate do |value|
-      # do more flags exist?
-      unless ['up', 'down'].include?value
-        raise ArgumentError, 'Invalid flag, only up or down are allowed'
-      end
-    end
-  end
-
   newproperty(:vlan_id) do
     desc 'VLAN ID to use with network type is vlan'
     validate do |value|

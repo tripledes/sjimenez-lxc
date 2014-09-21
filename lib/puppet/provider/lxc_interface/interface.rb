@@ -10,7 +10,6 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       define_container
       @container.set_config_item("lxc.network.#{@resource[:index]}.type", @resource[:type])
       @container.set_config_item("lxc.network.#{@resource[:index]}.name", @resource[:name])
-      @container.set_config_item("lxc.network.#{@resource[:index]}.flags", @resource[:flags])
       @container.set_config_item("lxc.network.#{@resource[:index]}.link", @resource[:link]) unless @resource[:link].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id", @resource[:vlan_id]) unless @resource[:vlan_id].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode", @resource[:macvlan_mode]) unless @resource[:macvlan_mode].nil?
@@ -53,27 +52,6 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   end
 
   # getters and setters
-
-  def flags
-    begin
-      define_container
-      @container.config_item("lxc.network.#{@resource[:index]}.flags")
-    rescue LXC::Error
-      # TODO: might be better to fail here instead of returning empty string which
-      # would trigger the setter
-      ""
-    end
-  end
-
-  def flags=(value)
-    begin
-      define_container
-      @container.set_config_item("lxc.network.#{@resource[:index]}.flags",value)
-      true
-    rescue LXC::Error
-      false
-    end
-  end
 
   def link
     begin

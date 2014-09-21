@@ -67,21 +67,6 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
     end
   end
 
-  describe '#flags' do
-    it 'should return up from the getter' do
-      @provider.container.stubs(:config_item).with('lxc.network.1.flags').returns('up')
-      @provider.send(:flags).should == 'up'
-    end
-    it 'should return true when the setter successfully changes the value' do
-      @provider.container.stubs(:set_config_item).with('lxc.network.1.flags','up')
-      @provider.send(:flags=,'up').should == true
-    end
-    it 'setter should return false if LXC::Error is raised' do
-      @provider.container.stubs(:set_config_item).raises(LXC::Error)
-      @provider.send(:flags=,'up').should == false
-    end
-  end
-
   describe '#vlan_id' do
     it 'should return 55 from the getter' do
       @provider.container.stubs(:config_item).with('lxc.network.1.vlan_id').returns('55')
