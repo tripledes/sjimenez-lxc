@@ -67,6 +67,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def link=(value)
     begin
       define_container
+      @container.clear_config_item("lxc.network.#{resource[:index]}.link")
       @container.set_config_item("lxc.network.#{@resource[:index]}.link",value)
       @container.save_config
       true
@@ -89,6 +90,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def vlan_id=(value)
     begin
       define_container
+      @container.clear_config_item("lxc.network.#{resource[:index]}.vlan_id")
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id",value)
       @container.save_config
       true
@@ -111,6 +113,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def macvlan_mode=(value)
     begin
       define_container
+      @container.clear_config_item("lxc.network.#{resource[:index]}.macvlan_mode")
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode",value)
       @container.save_config
       true
@@ -133,6 +136,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def type=(value)
     begin
       define_container
+      @container.clear_config_item("lxc.network.#{resource[:index]}.type")
       @container.set_config_item("lxc.network.#{@resource[:index]}.type",value)
       @container.save_config
       true
@@ -164,6 +168,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def ipv4=(value)
     begin
       define_container
+      @container.clear_config_item("lxc.network.#{resource[:index]}.ipv4")
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4",value)
       @container.save_config
       true
@@ -186,6 +191,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def hwaddr=(value)
     begin
       define_container
+      @container.clear_config_item("lxc.network.#{resource[:index]}.hwaddr")
       @container.set_config_item("lxc.network.#{@resource[:index]}.hwaddr",value)
       @container.save_config
       true
