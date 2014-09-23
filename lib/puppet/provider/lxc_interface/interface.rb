@@ -140,7 +140,16 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def ipv4
     begin
       define_container
-      @container.config_item("lxc.network.#{@resource[:index]}.ipv4")
+      # It should not be that expensive, #config_item should return full value
+      # from configuration file...but it does not.
+      r,w = IO.pipe
+      @container.attach(wait: true) do
+        r.close
+        w.write(`ip addr show #{@resource[:name]}`)
+      end
+      w.close
+      output = r.read
+      output.match(/(((\d+)\.){3}(\d+)\/[1-9]{,2})/)[1]
     rescue LXC::Error
       # TODO: might be better to fail here instead of returning empty string which
       # would trigger the setter
