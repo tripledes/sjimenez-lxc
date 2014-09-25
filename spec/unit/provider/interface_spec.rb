@@ -58,10 +58,13 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.send(:link).should == 'lxcbr0'
     end
     it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.link')
       @provider.container.stubs(:set_config_item).with('lxc.network.1.link','lxcbr1')
+      @provider.container.stubs(:save_config)
       @provider.send(:link=,'lxcbr1').should == true
     end
     it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.link')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
       @provider.send(:link=,'lxcbr1').should == false
     end
@@ -73,10 +76,13 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.send(:vlan_id).should == '55'
     end
     it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.vlan_id')
       @provider.container.stubs(:set_config_item).with('lxc.network.1.vlan_id','66')
+      @provider.container.stubs(:save_config)
       @provider.send(:vlan_id=,'66').should == true
     end
     it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.vlan_id')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
       @provider.send(:vlan_id=,'66').should == false
     end
@@ -88,10 +94,13 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.send(:macvlan_mode).should == 'vepa'
     end
     it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.macvlan_mode')
       @provider.container.stubs(:set_config_item).with('lxc.network.1.macvlan_mode','private')
+      @provider.container.stubs(:save_config)
       @provider.send(:macvlan_mode=,'private').should == true
     end
     it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.macvlan_mode')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
       @provider.send(:macvlan_mode=,'bridge').should == false
     end
@@ -103,10 +112,13 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.send(:type).should == 'phys'
     end
     it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.type')
       @provider.container.stubs(:set_config_item).with('lxc.network.1.type','macvlan')
+      @provider.container.stubs(:save_config)
       @provider.send(:type=,'macvlan').should == true
     end
     it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.type')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
       @provider.send(:type=,'bridge').should == false
     end
@@ -118,10 +130,13 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.send(:ipv4).should == '192.168.1.100/24'
     end
     it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.ipv4')
       @provider.container.stubs(:set_config_item).with('lxc.network.1.ipv4','192.168.1.101/24')
+      @provider.container.stubs(:save_config)
       @provider.send(:ipv4=,'192.168.1.101/24').should == true
     end
     it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.ipv4')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
       @provider.send(:ipv4=,'192.168.1.102/24').should == false
     end
@@ -133,10 +148,13 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.send(:hwaddr).should == '00:de:ad:be:ef:00'
     end
     it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.hwaddr')
       @provider.container.stubs(:set_config_item).with('lxc.network.1.hwaddr','01:de:ad:be:ef:01')
+      @provider.container.stubs(:save_config)
       @provider.send(:hwaddr=,'01:de:ad:be:ef:01').should == true
     end
     it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.hwaddr')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
       @provider.send(:hwaddr=,'02:de:ad:be:ef:02').should == false
     end
