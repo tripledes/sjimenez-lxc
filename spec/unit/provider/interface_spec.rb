@@ -125,8 +125,10 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
   end
 
   describe '#ipv4' do
-    it 'should return 192.168.1.100/24 from the getter', pending: "Need to find a good way to test it while using #attach" do
-      @provider.container.stubs(:attach).with(wait: true).returns('192.168.1.100/24')
+    it 'should return 192.168.1.100/24 from the getter', pending: "Have to stub File#methods" do
+      @provider.container.stubs(:config_file_name).returns('/var/lib/lxc/ubuntu_test/config')
+      @provider.fd = stub('File')
+      @provider.fd.stubs(:readlines).returns(["lxc.network.name = eth1\n", "lxc.network.ipv4 = 192.168.1.100/24\n", "lxc.network.type = veth\n", "lxc.network.ipv4 = 101.101.101.2/16\n"])
       @provider.send(:ipv4).should == '192.168.1.100/24'
     end
     it 'should return true when the setter successfully changes the value' do
