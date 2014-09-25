@@ -67,7 +67,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def link=(value)
     begin
       define_container
-      @container.clear_config_item("lxc.network.#{resource[:index]}.link")
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.link")
       @container.set_config_item("lxc.network.#{@resource[:index]}.link",value)
       @container.save_config
       true
@@ -90,7 +90,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def vlan_id=(value)
     begin
       define_container
-      @container.clear_config_item("lxc.network.#{resource[:index]}.vlan_id")
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.vlan_id")
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id",value)
       @container.save_config
       true
@@ -113,7 +113,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def macvlan_mode=(value)
     begin
       define_container
-      @container.clear_config_item("lxc.network.#{resource[:index]}.macvlan_mode")
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.macvlan_mode")
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode",value)
       @container.save_config
       true
@@ -136,7 +136,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def type=(value)
     begin
       define_container
-      @container.clear_config_item("lxc.network.#{resource[:index]}.type")
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.type")
       @container.set_config_item("lxc.network.#{@resource[:index]}.type",value)
       @container.save_config
       true
@@ -147,18 +147,16 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
 
   def ipv4
     begin
+      # This is a workaround until liblxc is realease with
+      # https://github.com/lxc/lxc/pull/332
+      # Once liblxc > 1.0.5, LXC::version can be used to call the proper method
       define_container
-      # It should not be that expensive, #config_item should return full value
-      # from configuration file...but it does not.
-      r,w = IO.pipe
-      @container.attach(wait: true) do
-        r.close
-        w.write(`ip addr show #{@resource[:name]}`)
-      end
-      w.close
-      output = r.read
-      output.match(/(((\d+)\.){3}(\d+)\/[1-9]{,2})/)[1]
-    rescue LXC::Error
+      fd = File.new(@container.config_file_name,'r')
+      content = fd.readlines
+      fd.close
+      matched = content.select { |c| c =~ /lxc.network.ipv4/ }
+      matched[@resource[:index]].split('=').last.strip
+    rescue StandardError
       # TODO: might be better to fail here instead of returning empty string which
       # would trigger the setter
       ""
@@ -168,7 +166,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def ipv4=(value)
     begin
       define_container
-      @container.clear_config_item("lxc.network.#{resource[:index]}.ipv4")
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.ipv4")
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4",value)
       @container.save_config
       true
@@ -191,7 +189,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def hwaddr=(value)
     begin
       define_container
-      @container.clear_config_item("lxc.network.#{resource[:index]}.hwaddr")
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.hwaddr")
       @container.set_config_item("lxc.network.#{@resource[:index]}.hwaddr",value)
       @container.save_config
       true
