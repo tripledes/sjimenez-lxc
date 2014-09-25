@@ -57,10 +57,9 @@ Puppet::Type.newtype(:lxc_interface) do
   newproperty(:ipv4) do
     desc 'IPv4 address'
     validate do |value|
-      # FIXME: Bindings return IP without mask, is it really needed? If so, might need
-      # to capture it attaching to the container and executing ip or ifconfig.
+      # FIXME: Allow arrays, liblxc is able to set a whole array of IPs at once
       begin
-        ip = IPAddr.new(value)
+        IPAddr.new(value)
       rescue ArgumentError
         raise ArgumentError, 'Invalid IPv4 address'
       end
