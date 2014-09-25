@@ -151,13 +151,17 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       # https://github.com/lxc/lxc/pull/332
       # Once liblxc > 1.0.5, LXC::version can be used to call the proper method
       define_container
-      fd = File.new(@container.config_file_name,'r')
-      content = fd.readlines
-      fd.close
-      matched = content.select { |c| c =~ /lxc.network/ }
-      index = matched.rindex("lxc.network.name = #{@resource[:name]}\n")
-      sliced = matched.slice(index..-1)
-      sliced.select { |m| m =~ /lxc.network.ipv4/ }.first.split('=').last.strip
+      if Puppet::Util::Package.versioncmp(LXC::version,"1.0.5") <= 0
+        fd = File.new(@container.config_file_name,'r')
+        content = fd.readlines
+        fd.close
+        matched = content.select { |c| c =~ /lxc.network/ }
+        index = matched.rindex("lxc.network.name = #{@resource[:name]}\n")
+        sliced = matched.slice(index..-1)
+        sliced.select { |m| m =~ /lxc.network.ipv4/ }.first.split('=').last.strip
+      else
+        @container.config_item("lxc.network.#{@resource[:index]}.ipv4").first
+      end
     rescue StandardError
       # TODO: might be better to fail here instead of returning empty string which
       # would trigger the setter
