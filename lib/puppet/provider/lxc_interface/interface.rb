@@ -154,8 +154,10 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       fd = File.new(@container.config_file_name,'r')
       content = fd.readlines
       fd.close
-      matched = content.select { |c| c =~ /lxc.network.ipv4/ }
-      matched[@resource[:index]].split('=').last.strip
+      matched = content.select { |c| c =~ /lxc.network/ }
+      index = matched.rindex("lxc.network.name = #{@resource[:name]}\n")
+      sliced = matched.slice(index..-1)
+      h.select { |m| m =~ /lxc.network.ipv4/ }.first.split('=').last.strip
     rescue StandardError
       # TODO: might be better to fail here instead of returning empty string which
       # would trigger the setter
