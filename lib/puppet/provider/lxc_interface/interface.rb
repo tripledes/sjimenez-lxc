@@ -149,9 +149,10 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
     begin
       # This is a workaround until liblxc is realease with
       # https://github.com/lxc/lxc/pull/332
-      # Once liblxc > 1.0.5, LXC::version can be used to call the proper method
+      # Once liblxc >= 1.1.0, LXC::version can be used to call the proper method
+      # hopefull the patch will be there for 1.1.0
       define_container
-      if Puppet::Util::Package.versioncmp(LXC::version,"1.0.5") <= 0
+      if Puppet::Util::Package.versioncmp(LXC::version,"1.1.0") <= 0
         fd = File.new(@container.config_file_name,'r')
         content = fd.readlines
         fd.close
