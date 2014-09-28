@@ -126,6 +126,7 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
 
   describe '#ipv4' do
     it 'should return 192.168.1.100/24 from the getter with LXC::version < 1.1.0' do
+      @provider.lxc_version = '1.0.6'
       file = Tempfile.new('foo')
       file.write("lxc.network.name = eth1\nlxc.network.ipv4 = 192.168.1.100/24\nlxc.network.type = veth\nlxc.network.ipv4 = 101.101.101.2/16\n")
       path = file.path
@@ -133,6 +134,11 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.container.stubs(:config_file_name).returns(path)
       @provider.send(:ipv4).should == '192.168.1.100/24'
       file.unlink
+    end
+    it 'should return 192.168.1.100/24 from the getter with LXC::version >= 1.1.0' do
+      @provider.lxc_version = '1.1.0'
+      @provider.container.stubs(:config_item).with('lxc.network.1.ipv4').returns(['192.168.1.100/24'])
+      @provider.send(:ipv4).should == '192.168.1.100/24'
     end
     it 'should return true when the setter successfully changes the value' do
       @provider.container.stubs(:clear_config_item).with('lxc.network.1.ipv4')

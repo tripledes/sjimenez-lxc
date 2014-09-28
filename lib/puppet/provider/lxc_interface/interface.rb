@@ -3,7 +3,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   defaultfor :operatingsystem => :ubuntu
   confine :feature => :lxc, :kernel => 'Linux'
 
-  attr_accessor :container
+  attr_accessor :container, :lxc_version
 
   def create
     begin
@@ -152,7 +152,12 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       # Once liblxc >= 1.1.0, LXC::version can be used to call the proper method
       # hopefull the patch will be there for 1.1.0
       define_container
-      if Puppet::Util::Package.versioncmp(LXC::version,"1.1.0") <= 0
+
+      unless @lxc_version
+        @lxc_version = LXC::version
+      end
+
+      if Puppet::Util::Package.versioncmp(@lxc_version,"1.1.0") < 0
         fd = File.new(@container.config_file_name,'r')
         content = fd.readlines
         fd.close
