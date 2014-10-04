@@ -181,6 +181,33 @@ Puppet::Type.type(:lxc).provide(:container) do
     end
   end
 
+  def ipv4_gateway
+    begin
+      unless @container
+        @container = LXC::Container.new(@resource[:name])
+      end
+
+      @container.config_item('lxc.network.0.ipv4_gateway')
+    rescue LXC::Error
+      ""
+    end
+  end
+
+  def ipv4_gateway=(value)
+    begin
+      unless @container
+        @container = LXC::Container.new(@resource[:name])
+      end
+
+      @container.clear_config_item("lxc.network.0.ipv4.gateway")
+      @container.set_config_item("lxc.network.0.ipv4.gateway",value)
+      @container.save_config
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
   private
   def symbolize_hash hash
     result = {}
