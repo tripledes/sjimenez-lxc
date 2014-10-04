@@ -89,4 +89,33 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       expect(@provider.status).to be :stopped
     end
   end
+
+  describe '#ipv4' do
+    it 'will return 192.168.1.100/24 liblxc version < 1.1.0' do
+      @provider.lxc_version = '1.0.6'
+      file = Tempfile.new('foobar')
+      file.write("lxc.network.name = eth0\nlxc.network.ipv4 = 192.168.1.100/24\nlxc.network.type = veth\nlxc.network.ipv4 = 101.101.101.2/16\n")
+      path = file.path
+      file.close
+      @provider.container.stubs(:config_file_name).returns(path)
+      @provider.send(:ipv4).should == '192.168.1.100/24'
+      file.unlink
+    end
+    it 'will return 192.168.1.100/24 liblxc version >= 1.1.0' do
+      @provider.lxc_version = '1.1.0'
+      @provider.container.stubs(:config_item).with('lxc.network.0.ipv4').returns(['192.168.1.100/24'])
+      @provider.send(:ipv4).should == '192.168.1.100/24'
+    end
+    it 'should return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.0.ipv4')
+      @provider.container.stubs(:set_config_item).with('lxc.network.0.ipv4','192.168.1.100/24')
+      @provider.container.stubs(:save_config)
+      @provider.send(:ipv4=,'192.168.1.100/24').should == true
+    end
+    it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.0.ipv4')
+      @provider.container.stubs(:set_config_item).raises(LXC::Error)
+      @provider.send(:ipv4=,'192.168.0.100/24').should == false
+    end
+  end
 end
