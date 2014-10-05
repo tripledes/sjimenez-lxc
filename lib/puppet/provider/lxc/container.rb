@@ -12,19 +12,16 @@ Puppet::Type.type(:lxc).provide(:container) do
 
     begin
       @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]))
-    rescue StandardError => e
+      @container.set_config_item('lxc.network.0.name','eth0')
+      unless @resource[:ipv4].nil?
+        @container.set_config_item('lxc.network.0.ipv4',@resource[:ipv4])
+        @container.set_config_item('lxc.network.0.ipv4.gateway',@resource[:ipv4_gateway]) unless @resource[:ipv4_gateway].nil?
+      end
+    rescue LXC::Error => e
       fail("Failed to create #{@resource[:name]}: #{e.message}")
     end
 
-    begin
-      unless @resource[:ipv4].nil?
-        @container.set_config_item('lxc.network.0.ipv4',@resource[:ipv4])
-        @container.set_config_item('lxc.network.0.ipv4_gateway',@resource[:ipv4_gateway]) unless @resource[:ipv4_gateway].nil?
-        @container.save_config
-      end
-    rescue LXC::Error => e
-      fail("Failed to set networking settings: #{e.message}")
-    end
+    @container.save_config
 
     case @resource[:state]
     when :running
@@ -155,7 +152,7 @@ Puppet::Type.type(:lxc).provide(:container) do
         matched = content.select { |c| c =~ /lxc.network/ }
         index = matched.rindex("lxc.network.name = eth0\n")
         sliced = matched.slice(index..-1)
-        sliced.select { |m| m =~ /lxc.network.ipv4/ }.first.split('=').last.strip
+        sliced.select { |m| m =~ /lxc.network.ipv4 =/ }.first.split('=').last.strip
       else
         @container.config_item("lxc.network.0.ipv4").first
       end
@@ -181,6 +178,8 @@ Puppet::Type.type(:lxc).provide(:container) do
     end
   end
 
+  # TODO: There is an inconsistency in liblxc, https://github.com/lxc/lxc/pull/337
+  # thus, ipv4_gateway should detect version and work properly if the PR gets merged in.
   def ipv4_gateway
     begin
       unless @container

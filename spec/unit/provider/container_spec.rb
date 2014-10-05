@@ -25,6 +25,8 @@ describe Puppet::Type.type(:lxc).provider(:container) do
   describe '#create' do
     it 'Will create the container and change its state to running' do
       @provider.container.stubs('create')
+      @provider.container.stubs('set_config_item')
+      @provider.container.stubs('save_config')
       @provider.container.stubs('start')
       @provider.container.stubs('wait')
       @provider.container.stubs('defined?').returns(false)
