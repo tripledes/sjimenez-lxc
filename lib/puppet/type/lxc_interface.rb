@@ -15,7 +15,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newparam(:index) do
     desc 'Index for interface configuration'
-    newvalues(/\d+/)
+    newvalues(/[1-9]+/)
   end
 
   newproperty(:link) do
