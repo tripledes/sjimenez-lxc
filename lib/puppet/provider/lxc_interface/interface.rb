@@ -35,9 +35,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   def destroy
     begin
       define_container
-      @container.keys("lxc.network.#{@resource[:index]}").each do |k|
-        @container.clear_config_item("lxc.network.#{@resource[:index]}.#{k}")
-      end
+      @container.clear_config_item("lxc.network.#{@resource[:index]}")
       @container.save_config
       true
     rescue LXC::Error
