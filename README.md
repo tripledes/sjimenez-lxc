@@ -85,11 +85,16 @@ lxc_interface { 'eth1':
 applied to the container's configuration file, for it to take effect the
 container must be restarted (stopped/started), use ```restart => true```.
 
+* ```ipv4``` parameter on ```lxc``` provider might not work as expected if the
+template in use configures network on the container to use DHCP. The container
+will have 2 IPs on the first interface.
+
 ## TODO
 
 * Add support for Ubuntu precise.
 * Add support for current CentOS releases.
 * Add lxc-cgroup provider.
+* Get rid of duplications.
 * Add Beaker to the game.
 
 ## Limitations
