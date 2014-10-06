@@ -90,6 +90,11 @@ Puppet::Type.newtype(:lxc) do
     end
   end
 
+  newparam(:restart) do
+    defaultto false
+    newvalues(:true,:false)
+  end
+  
   autorequire(:package) do
     ['lxc-bindings']
   end
