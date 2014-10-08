@@ -172,6 +172,7 @@ Puppet::Type.type(:lxc).provide(:container) do
       @container.clear_config_item("lxc.network.0.ipv4")
       @container.set_config_item("lxc.network.0.ipv4",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -201,6 +202,7 @@ Puppet::Type.type(:lxc).provide(:container) do
       @container.clear_config_item("lxc.network.0.ipv4.gateway")
       @container.set_config_item("lxc.network.0.ipv4.gateway",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -208,6 +210,11 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   private
+  def restart
+    self.stop
+    self.start
+  end
+
   def symbolize_hash hash
     result = {}
     if hash.nil?
