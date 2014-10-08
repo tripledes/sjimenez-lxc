@@ -127,7 +127,7 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       @provider.send(:ipv4_gateway).should == '192.168.1.254'
     end
     it 'will return true when the setter successfully changes the value' do
-      @provider.container.stubs(:clear_config_item).with('lxc.network.0.ipv4.gateway')
+      @provider.container.stubs(:clear_config_item).with('lxc.network.0.ipv4_gateway')
       @provider.container.stubs(:set_config_item).with('lxc.network.0.ipv4.gateway','192.168.1.253')
       @provider.container.stubs(:save_config)
       @provider.send(:ipv4_gateway=,'192.168.1.253').should == true

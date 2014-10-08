@@ -199,7 +199,7 @@ Puppet::Type.type(:lxc).provide(:container) do
         @container = LXC::Container.new(@resource[:name])
       end
 
-      @container.clear_config_item("lxc.network.0.ipv4.gateway")
+      @container.clear_config_item("lxc.network.0.ipv4_gateway")
       @container.set_config_item("lxc.network.0.ipv4.gateway",value)
       @container.save_config
       restart if @resource[:restart]
