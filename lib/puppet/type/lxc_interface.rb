@@ -57,11 +57,23 @@ Puppet::Type.newtype(:lxc_interface) do
   newproperty(:ipv4) do
     desc 'IPv4 address'
     validate do |value|
-      # FIXME: Allow arrays, liblxc is able to set a whole array of IPs at once
-      begin
-        IPAddr.new(value)
-      rescue ArgumentError
-        raise ArgumentError, 'Invalid IPv4 address'
+      ips = Array.new
+
+      case value.class.to_s
+      when 'String'
+        ips << value
+      when 'Array'
+        ips = value
+      else
+        raise ArgumentError, 'ipv4 parameter must be either String or Array'
+      end
+
+      ips.each do |ip|
+        begin
+          IPAddr.new(ip)
+        rescue ArgumentError
+          raise ArgumentError, 'Invalid IPv4 address'
+        end
       end
     end
   end
