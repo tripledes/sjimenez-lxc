@@ -81,7 +81,6 @@ Puppet::Type.newtype(:lxc) do
   newproperty(:ipv4_gateway) do
     desc 'Gateway IPv4 address'
     validate do |value|
-      # FIXME: Allow arrays, liblxc is able to set a whole array of IPs at once
       begin
         IPAddr.new(value)
       rescue ArgumentError
@@ -94,7 +93,7 @@ Puppet::Type.newtype(:lxc) do
     defaultto false
     newvalues(:true,:false)
   end
-  
+
   autorequire(:package) do
     ['lxc-bindings']
   end
