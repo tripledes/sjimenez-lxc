@@ -75,6 +75,11 @@ Puppet::Type.newtype(:lxc_interface) do
     end
   end
 
+  newparam(:restart) do
+    defaultto false
+    newvalues(:true,:false)
+  end
+
   autorequire(:lxc) do
     [self[:container]]
   end

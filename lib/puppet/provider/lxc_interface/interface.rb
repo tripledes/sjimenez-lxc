@@ -16,6 +16,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4", @resource[:ipv4]) unless @resource[:ipv4].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.hwaddr", @resource[:hwaddr]) unless @resource[:hwaddr].nil?
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -68,6 +69,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.clear_config_item("lxc.network.#{@resource[:index]}.link")
       @container.set_config_item("lxc.network.#{@resource[:index]}.link",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -91,6 +93,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.clear_config_item("lxc.network.#{@resource[:index]}.vlan_id")
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -114,6 +117,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.clear_config_item("lxc.network.#{@resource[:index]}.macvlan_mode")
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -137,6 +141,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.clear_config_item("lxc.network.#{@resource[:index]}.type")
       @container.set_config_item("lxc.network.#{@resource[:index]}.type",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -179,6 +184,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.clear_config_item("lxc.network.#{@resource[:index]}.ipv4")
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
@@ -202,9 +208,19 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.clear_config_item("lxc.network.#{@resource[:index]}.hwaddr")
       @container.set_config_item("lxc.network.#{@resource[:index]}.hwaddr",value)
       @container.save_config
+      restart if @resource[:restart]
       true
     rescue LXC::Error
       false
     end
+  end
+
+  private
+  def restart
+    # TODO: make timeout a parameter defaultto 10
+    @container.stop
+    @container.wait(:stopped, 10)
+    @container.start
+    @container.wait(:running, 10)
   end
 end

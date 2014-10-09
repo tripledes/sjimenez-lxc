@@ -7,7 +7,7 @@ describe Puppet::Type.type(:lxc_interface), 'when validating attributes' do
     end
   end
 
-  [:name, :container, :index].each do |param|
+  [:name, :container, :index, :restart].each do |param|
     it "should have a #{param} parameter" do
       Puppet::Type.type(:lxc_interface).attrtype(param).should == :param
     end
