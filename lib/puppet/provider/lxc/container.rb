@@ -14,7 +14,7 @@ Puppet::Type.type(:lxc).provide(:container) do
       @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]))
       @container.set_config_item('lxc.network.0.name','eth0')
       unless @resource[:ipv4].nil?
-        @container.set_config_item('lxc.network.0.ipv4',@resource[:ipv4])
+        @container.set_config_item('lxc.network.0.ipv4',@resource[:ipv4].flatten)
         @container.set_config_item('lxc.network.0.ipv4.gateway',@resource[:ipv4_gateway]) unless @resource[:ipv4_gateway].nil?
       end
     rescue LXC::Error => e

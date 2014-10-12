@@ -95,6 +95,7 @@ Puppet::Type.newtype(:lxc) do
         value
       end
     end
+    # Is it really needed?
     def insync?(is)
       self.devfail "#{self.class.name}'s should is not array" unless @should.is_a?(Array)
       return true if @should.empty?

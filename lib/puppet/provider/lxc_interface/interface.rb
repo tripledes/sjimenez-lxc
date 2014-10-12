@@ -13,7 +13,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.set_config_item("lxc.network.#{@resource[:index]}.link", @resource[:link]) unless @resource[:link].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id", @resource[:vlan_id]) unless @resource[:vlan_id].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode", @resource[:macvlan_mode]) unless @resource[:macvlan_mode].nil?
-      @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4", @resource[:ipv4]) unless @resource[:ipv4].nil?
+      @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4", @resource[:ipv4].flatten) unless @resource[:ipv4].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.hwaddr", @resource[:hwaddr]) unless @resource[:hwaddr].nil?
       @container.save_config
       restart if @resource[:restart]
