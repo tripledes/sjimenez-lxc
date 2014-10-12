@@ -54,7 +54,7 @@ Puppet::Type.newtype(:lxc_interface) do
     end
   end
 
-  newproperty(:ipv4) do
+  newproperty(:ipv4, :array_matching => :all) do
     desc 'IPv4 address'
     validate do |value|
       ips = Array.new
