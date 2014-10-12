@@ -152,9 +152,20 @@ Puppet::Type.type(:lxc).provide(:container) do
         matched = content.select { |c| c =~ /lxc.network/ }
         index = matched.rindex("lxc.network.name = eth0\n")
         sliced = matched.slice(index..-1)
-        sliced.select { |m| m =~ /lxc.network.ipv4 =/ }.first.split('=').last.strip
+        # shift first lxc.network.name which should be the one we're handling.
+        sliced.shift
+        next_block_idx = sliced.index(sliced.grep(/lxc.network.name/).first)
+        if next_block_idx.nil?
+          ips = sliced
+        else
+          ips = sliced[0..(next_block_idx - 1)]
+        end
+        ips.select! { |b| b =~ /lxc.network.ipv4 =/ }
+        ips.collect { |m| m.split('=').last.strip }
       else
-        @container.config_item("lxc.network.0.ipv4").first
+        ips = @container.config_item("lxc.network.0.ipv4")
+        return ips.first if ips.size == 1
+        return ips
       end
     rescue StandardError
       # TODO: might be better to fail here instead of returning empty string which

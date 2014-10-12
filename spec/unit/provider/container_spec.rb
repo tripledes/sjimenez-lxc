@@ -96,11 +96,11 @@ describe Puppet::Type.type(:lxc).provider(:container) do
     it 'will return 192.168.1.100/24 liblxc version < 1.1.0' do
       @provider.lxc_version = '1.0.6'
       file = Tempfile.new('foobar')
-      file.write("lxc.network.name = eth0\nlxc.network.ipv4 = 192.168.1.100/24\nlxc.network.type = veth\nlxc.network.ipv4 = 101.101.101.2/16\n")
+      file.write("lxc.network.name = eth0\nlxc.network.ipv4 = 192.168.1.100/24\nlxc.network.name = eth1\nlxc.network.type = veth\nlxc.network.ipv4 = 101.101.101.2/16\n")
       path = file.path
       file.close
       @provider.container.stubs(:config_file_name).returns(path)
-      @provider.send(:ipv4).should == '192.168.1.100/24'
+      @provider.send(:ipv4).should == ['192.168.1.100/24']
       file.unlink
     end
     it 'will return 192.168.1.100/24 liblxc version >= 1.1.0' do

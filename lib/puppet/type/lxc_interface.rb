@@ -76,6 +76,11 @@ Puppet::Type.newtype(:lxc_interface) do
         end
       end
     end
+    munge do |value|
+      if value.kind_of?String
+        Array.new.push(value)
+      end
+    end
   end
 
   newproperty(:hwaddr) do

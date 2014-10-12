@@ -167,7 +167,16 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
         matched = content.select { |c| c =~ /lxc.network/ }
         index = matched.rindex("lxc.network.name = #{@resource[:name]}\n")
         sliced = matched.slice(index..-1)
-        sliced.select { |m| m =~ /lxc.network.ipv4/ }.first.split('=').last.strip
+        # shift first lxc.network.name which should be the one we're handling.
+        sliced.shift
+        next_block_idx = sliced.index(sliced.grep(/lxc.network.name/).first)
+        if next_block_idx.nil?
+          ips = sliced
+        else
+          ips = sliced[0..(next_block_idx - 1)]
+        end
+        ips.select! { |b| b =~ /lxc.network.ipv4 =/ }
+        ips.collect { |m| m.split('=').last.strip }
       else
         @container.config_item("lxc.network.#{@resource[:index]}.ipv4").first
       end

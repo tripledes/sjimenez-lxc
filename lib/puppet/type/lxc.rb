@@ -88,6 +88,11 @@ Puppet::Type.newtype(:lxc) do
         end
       end
     end
+    munge do |value|
+      if value.kind_of?String
+        Array.new.push(value)
+      end
+    end
   end
 
   newproperty(:ipv4_gateway) do
