@@ -38,8 +38,9 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
   * storage_backend: dir, lvm, btrfs, loop  or best.
   * storage_options: options to be passed to the chosen storage backend.
   * state: running, stopped or frozen.
-  * ipv4: IPv4 address for eth0.
+  * ipv4: IPv4 address for eth0 (can be string or array).
   * ipv4_gateway: default IPv4 gateway.
+  * restart: whether to restart the container after applying network configuration.
 
 ### lxc_interface
 
@@ -51,14 +52,19 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
   * vlan_id: VLAN ID.
   * macvlan_mode: private, vepa or bridge.
   * type: defaults to veth.
-  * ipv4: IPv4 address.
+  * ipv4: IPv4 address (can be string or array).
   * hwaddr: MAC.
+  * restart: whether to restart the container after applying configuration.
 
 ## Usage
 
 ```Puppet
+# Include lxc class
 include 'lxc'
 
+# Create ubuntu_test container based on ubuntu template, set its state to
+# running, configure its network to IP address 10.0.3.2/24 and default gateway
+# 10.0.3.1, using as storage the VG vg00 and LV ubuntu_test01.
 lxc { 'ubuntu_test':
   ensure          => running,
   template        => 'ubuntu',
@@ -68,26 +74,32 @@ lxc { 'ubuntu_test':
   storage_options => {'vgname' => 'vg00', 'lvname' => 'ubuntu_test01'},
 }
 
+# Will configure eth1 on container 'ubuntu_test', with two different IP addresses
 lxc_interface { 'eth1':
   ensure    => present,
   container => 'ubuntu_test',
   index     => 1,
   link      => 'lxcbr0',
   type      => 'veth',
-  ipv4      => '192.168.200.5/16',
+  ipv4      => ['192.168.200.5/16','192.168.100.10/24'],
+  restart   => true,
 }
-
 ```
 
 ## NOTES
 
-* All the networking settings, both in ```lxc``` and ```lxc_interface``` are only
-applied to the container's configuration file, for it to take effect the
-container must be restarted (stopped/started), use ```restart => true```.
+* ```lxc``` provider will use the defaults from file */etc/lxc/default*
+(on Ubuntu) to get network type and link default configuration, this should
+change in future releases allowing to customize it as ```lxc_interface``` does.
 
 * ```ipv4``` parameter on ```lxc``` provider might not work as expected if the
 template in use configures network on the container to use DHCP. The container
-will have 2 IPs on the first interface.
+will have 2 (or several) IPs on the first interface.
+
+* All the networking settings, both in ```lxc``` and ```lxc_interface``` are only
+applied/checked to/from the container's configuration file, for it to take effect the
+container must be restarted (stopped/started), use ```restart => true``` if that's
+what you need.
 
 ## TODO
 

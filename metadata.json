@@ -1,18 +1,17 @@
 {
   "name": "sjimenez-lxc",
-  "version": "0.2.1",
+  "version": "0.4.0",
   "author": "sjimenez",
   "summary": "LXC management",
   "license": "Apache 2.0",
   "source": "https://github.com/tripledes/sjimenez-lxc",
   "project_page": "https://github.com/tripledes/sjimenez-lxc",
   "issues_url": "https://github.com/tripledes/sjimenez-lxc/issues",
+  "tags": ["ubuntu","lxc"],
   "operatingsystem_support": [
      {
        "operatingsystem": "Ubuntu",
-       "operatingsystemrelease": [
-         "14.04"
-       ]
+       "operatingsystemrelease": ["14.04"]
      }
   ],
   "requirements": [
