@@ -181,7 +181,8 @@ Puppet::Type.type(:lxc).provide(:container) do
       end
 
       @container.clear_config_item("lxc.network.0.ipv4")
-      @container.set_config_item("lxc.network.0.ipv4",value)
+      # Why does it get an array of arrays?
+      @container.set_config_item("lxc.network.0.ipv4",value.flatten)
       @container.save_config
       restart if @resource[:restart]
       true

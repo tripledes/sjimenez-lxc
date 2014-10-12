@@ -91,7 +91,16 @@ Puppet::Type.newtype(:lxc) do
     munge do |value|
       if value.kind_of?String
         Array.new.push(value)
+      else
+        value
       end
+    end
+    def insync?(is)
+      self.devfail "#{self.class.name}'s should is not array" unless @should.is_a?(Array)
+      return true if @should.empty?
+      return (is == @should.flatten or is == @should.collect { |v| v.to_s }) if match_all?
+      @should.each { |val| return true if is == val or is == val.to_s }
+      false
     end
   end
 

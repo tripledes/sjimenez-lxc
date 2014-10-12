@@ -110,14 +110,14 @@ describe Puppet::Type.type(:lxc).provider(:container) do
     end
     it 'should return true when the setter successfully changes the value' do
       @provider.container.stubs(:clear_config_item).with('lxc.network.0.ipv4')
-      @provider.container.stubs(:set_config_item).with('lxc.network.0.ipv4','192.168.1.100/24')
+      @provider.container.stubs(:set_config_item).with('lxc.network.0.ipv4',['192.168.1.100/24'])
       @provider.container.stubs(:save_config)
-      @provider.send(:ipv4=,'192.168.1.100/24').should == true
+      @provider.send(:ipv4=,['192.168.1.100/24']).should == true
     end
     it 'setter should return false if LXC::Error is raised' do
       @provider.container.stubs(:clear_config_item).with('lxc.network.0.ipv4')
       @provider.container.stubs(:set_config_item).raises(LXC::Error)
-      @provider.send(:ipv4=,'192.168.0.100/24').should == false
+      @provider.send(:ipv4=,['192.168.0.100/24']).should == false
     end
   end
 
