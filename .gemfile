@@ -7,6 +7,7 @@ group :development, :test do
   gem 'simplecov', :require => false
   gem 'ruby-lxc', :require => false
   gem 'rspec', '< 3.0.0', :require => false
+  gem 'beaker-rspec', :require => false
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']

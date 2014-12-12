@@ -15,7 +15,7 @@ class lxc::params {
       }
     }
     default: {
-      fail("${::operatingsystem} is not supported by this module.")
+      fail("${::operatingsystem} is not supported by ${module_name} module.")
     }
   }
 
@@ -29,7 +29,7 @@ class lxc::params {
   $lxc_lxc_service_enabled = true
 
   $lxc_ruby_bindings_gem_deps = [
-    'build-essential', 'ruby-dev', 'lxc-dev'
+    'build-essential', 'ruby-dev', 'lxc-dev', 'libcgmanager0'
   ]
 
 }
