@@ -1,3 +1,10 @@
 fixtures:
+  repositories:
+    apt:
+      repo: "https://github.com/puppetlabs/puppetlabs-apt"
+      ref: "origin/1.7.x"
+    stdlib:
+      repo: "https://github.com/puppetlabs/puppetlabs-stdlib"
+      ref: "origin/4.4.x"
   symlinks:
       lxc: "#{source_dir}"

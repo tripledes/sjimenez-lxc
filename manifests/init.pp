@@ -58,10 +58,12 @@ class lxc (
 
   package { $lxc_lxc_package:
     ensure => $lxc_lxc_version,
+    tag    => 'lxc_packages',
   }
 
   package { $lxc_ruby_bindings_deps:
     ensure => latest,
+    tag    => 'lxc_packages',
   }
 
   package { 'lxc-bindings':
