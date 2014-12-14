@@ -4,10 +4,16 @@ class lxc::params {
     'Ubuntu': {
       case $::lsbdistcodename {
         'trusty': {
-          # Nothing to do here...
+          $lxc_ruby_bindings_gem_deps = [
+            'build-essential', 'ruby-dev', 'lxc-dev', 'libcgmanager0'
+          ]
         }
         'precise': {
           contain 'lxc::sources::precise'
+          $lxc_ruby_bindings_gem_deps = [
+            'build-essential', 'ruby-dev', 'lxc-dev', 'libcgmanager0',
+            'rubygems'
+          ]
         }
         default: {
           fail("Only Ubuntu ${::lsbdistcodename} is not supported by ${module_name}.")
@@ -27,10 +33,6 @@ class lxc::params {
   $lxc_lxc_service = 'lxc'
   $lxc_lxc_service_ensure = running
   $lxc_lxc_service_enabled = true
-
-  $lxc_ruby_bindings_gem_deps = [
-    'build-essential', 'ruby-dev', 'lxc-dev', 'libcgmanager0'
-  ]
 
 }
 
