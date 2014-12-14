@@ -40,6 +40,10 @@ describe 'lxc',:type => :class do
     it_behaves_like 'common resources'
 
     it do
+      should contain_package('rubygems').with_ensure('latest')
+    end
+
+    it do
       should contain_apt__ppa('lxc')
     end
   end
