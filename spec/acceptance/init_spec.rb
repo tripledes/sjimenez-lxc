@@ -7,9 +7,10 @@ describe 'lxc class' do
         include 'lxc'
 
         lxc { 'ubuntu_test':
-          ensure   => present,
-          state    => running,
-          template => 'ubuntu',
+          ensure           => present,
+          state            => running,
+          template         => 'ubuntu',
+          template_options => ['--mirror', 'http://de.archive.ubuntu.com/ubuntu'],
         }
       EOS
 
@@ -23,5 +24,10 @@ describe 'lxc class' do
     it do
       should be_installed
     end
+  end
+
+  describe lxc('ubuntu_test') do
+    it { should exist }
+    it { should be_running }
   end
 end
