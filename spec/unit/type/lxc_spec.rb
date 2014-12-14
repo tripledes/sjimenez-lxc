@@ -7,7 +7,7 @@ describe Puppet::Type.type(:lxc), 'when validating attributes' do
     end
   end
 
-  [:name, :template, :timeout, :storage_backend, :storage_options, :restart].each do |param|
+  [:name, :template, :template_options, :timeout, :storage_backend, :storage_options, :restart].each do |param|
     it "should have a #{param} parameter" do
       Puppet::Type.type(:lxc).attrtype(param).should == :param
     end
@@ -55,6 +55,12 @@ describe Puppet::Type.type(:lxc), 'when validating attribute values' do
   it 'should raise error for invalid key on :storage_options Hash' do
     expect {
       Puppet::Type.type(:lxc).new(:name => 'lol_container', :state => :running, :storage_backend => :lvm, :storage_options => {'invalid_key' => 1 })
+    }.to raise_error
+  end
+
+  it 'should raise error for non-Array as value for :template_options' do
+    expect {
+      Puppet::Type.type(:lxc).new(:name => 'lol_container', :state => :running, :template_options => :nonsense)
     }.to raise_error
   end
 

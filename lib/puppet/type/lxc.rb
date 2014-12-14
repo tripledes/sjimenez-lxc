@@ -11,6 +11,15 @@ Puppet::Type.newtype(:lxc) do
     desc 'Template on which the container will be based.'
   end
 
+  newparam(:template_options) do
+    desc 'Parameters to be passed down to the template.'
+    validate do |value|
+      unless value.kind_of?Array
+        raise ArgumentError, "template_options is #{value.class}, expected Array"
+      end
+    end
+  end
+
   newparam(:timeout) do
     desc 'Timeout in seconds for container operations.'
     defaultto 10

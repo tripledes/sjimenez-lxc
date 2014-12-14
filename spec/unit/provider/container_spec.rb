@@ -6,10 +6,11 @@ describe Puppet::Type.type(:lxc).provider(:container) do
   before(:each) do
     @resource = Puppet::Type.type(:lxc).new(
       {
-         :name     => 'lol_container',
-         :state    => :running,
-         :template => 'ubuntu',
-         :provider => :container
+         :name             => 'lol_container',
+         :state            => :running,
+         :template         => 'ubuntu',
+         :provider         => :container,
+         :template_options => ['--mirror', 'http://yourlocal.mirror/ubuntu'],
       }
     )
     @provider = described_class.new(@resource)
