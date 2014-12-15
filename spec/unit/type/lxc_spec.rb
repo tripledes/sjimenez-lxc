@@ -1,9 +1,15 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:lxc), 'when validating attributes' do
-  [:ensure, :state, :ipv4, :ipv4_gateway].each do |prop|
+  [:ensure, :state].each do |prop|
     it "should have a #{prop} property" do
       Puppet::Type.type(:lxc).attrtype(prop).should == :property
+    end
+  end
+
+  [:ipv4, :ipv4_gateway].each do |noprop|
+    it "should have a #{noprop} property" do
+      Puppet::Type.type(:lxc).attrtype(noprop).should_not == :property
     end
   end
 
@@ -93,18 +99,6 @@ describe Puppet::Type.type(:lxc), 'when validating attribute values' do
     expect {
       Puppet::Type.type(:lxc).new(:name => 'lol_container', :state => :running, :storage_backend => :lvm, :storage_options => storage_options)
     }.to_not raise_error
-  end
-
-  it 'should fail when using an invalid ipv4 address' do
-    expect {
-      Puppet::Type.type(:lxc).new(:name => 'lol_container', :state => :running, :ipv4 => '340.40.30.256/24')
-    }.to raise_error
-  end
-
-  it 'should fail when using an invalid ipv4 address as gateway' do
-    expect {
-      Puppet::Type.type(:lxc).new(:name => 'lol_container', :state => :running, :ipv4_gateway => '340.40.30.256/24')
-    }.to raise_error
   end
 
   it 'should fail when restart is not boolean' do
