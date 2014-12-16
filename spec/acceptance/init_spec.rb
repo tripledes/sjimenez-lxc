@@ -12,6 +12,14 @@ describe 'lxc class' do
           template         => 'ubuntu',
           template_options => ['--mirror', 'http://de.archive.ubuntu.com/ubuntu'],
         }
+
+        lxc_interface { 'public':
+          container   => 'ubuntu_test',
+          index       => 0,
+          device_name => 'eth0',
+          ipv4        => '10.0.3.2/24',
+          restart     => true,
+        }
       EOS
 
       # Run it twice and test for idempotency
@@ -29,5 +37,11 @@ describe 'lxc class' do
   describe lxc('ubuntu_test') do
     it { should exist }
     it { should be_running }
+  end
+
+  describe command('lxc-ls --fancy | grep "10.0.3.2"') do
+    its(:exit_status) do
+      should eq 0
+    end
   end
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:lxc_interface), 'when validating attributes' do
-  [:ensure,:link,:type,:ipv4,:vlan_id,:macvlan_mode,:hwaddr].each do |prop|
+  [:ensure,:device_name,:link,:type,:ipv4,:vlan_id,:macvlan_mode,:hwaddr].each do |prop|
     it "should have a #{prop} property" do
       Puppet::Type.type(:lxc_interface).attrtype(prop).should == :property
     end
@@ -58,5 +58,9 @@ describe Puppet::Type.type(:lxc_interface), 'when defining the resource' do
 
   it 'should fail if index is not numeric' do
     expect{Puppet::Type.type(:lxc_interface).new(:name => 'eth0', :container => 'lol_container', :type => 'veth', :index => 'a')}.to raise_error
+  end
+
+  it 'should not fail if index is 0' do
+    expect{Puppet::Type.type(:lxc_interface).new(:name => 'eth0', :container => 'lol_container', :type => 'veth', :index => 0)}.to_not raise_error
   end
 end

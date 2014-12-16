@@ -6,9 +6,10 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
   before(:each) do
     @resource = Puppet::Type.type(:lxc_interface).new(
       {
-         :name      => 'eth1',
-         :container => 'lol_container',
-         :index     => 1,
+         :name        => 'public',
+         :container   => 'lol_container',
+         :index       => 1,
+         :device_name => 'eth1',
       }
     )
     @provider = Puppet::Type.type(:lxc_interface).provider(:interface).new(@resource)
@@ -49,6 +50,24 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
       @provider.container.stubs(:keys).returns(['name','hwaddr','ipv4','link','type'])
       @provider.container.stubs(:clear_config_item).raises(LXC::Error)
       @provider.send(:destroy).should == false
+    end
+  end
+
+  describe '#device_name' do
+    it 'should return eth1 from the getter' do
+      @provider.container.stubs(:config_item).with('lxc.network.1.name').returns('eth1')
+      @provider.send(:device_name).should == 'eth1'
+    end
+    it 'should return true when the setter succesfully change the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.name')
+      @provider.container.stubs(:set_config_item).with('lxc.network.1.name','eth0')
+      @provider.container.stubs(:save_config)
+      @provider.send(:device_name=,'eth0').should == true
+    end
+    it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.name')
+      @provider.container.stubs(:set_config_item).raises(LXC::Error)
+      @provider.send(:device_name=,'eth0').should == false
     end
   end
 

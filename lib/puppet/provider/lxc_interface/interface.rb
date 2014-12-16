@@ -9,7 +9,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
     begin
       define_container
       @container.set_config_item("lxc.network.#{@resource[:index]}.type", @resource[:type])
-      @container.set_config_item("lxc.network.#{@resource[:index]}.name", @resource[:name])
+      @container.set_config_item("lxc.network.#{@resource[:index]}.name", @resource[:device_name])
       @container.set_config_item("lxc.network.#{@resource[:index]}.link", @resource[:link]) unless @resource[:link].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id", @resource[:vlan_id]) unless @resource[:vlan_id].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode", @resource[:macvlan_mode]) unless @resource[:macvlan_mode].nil?
@@ -51,6 +51,28 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   end
 
   # getters and setters
+
+  def device_name
+    begin
+      define_container
+      @container.config_item("lxc.network.#{@resource[:index]}.name")
+    rescue LXC::Error
+      ""
+    end
+  end
+
+  def device_name=(value)
+    begin
+      define_container
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.name")
+      @container.set_config_item("lxc.network.#{@resource[:index]}.name",value)
+      @container.save_config
+      restart if @resource[:restart]
+      true
+    rescue LXC::Error
+      false
+    end
+  end
 
   def link
     begin
@@ -165,7 +187,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
         content = fd.readlines
         fd.close
         matched = content.select { |c| c =~ /lxc.network/ }
-        index = matched.rindex("lxc.network.name = #{@resource[:name]}\n")
+        index = matched.rindex("lxc.network.name = #{@resource[:device_name]}\n")
         sliced = matched.slice(index..-1)
         # shift first lxc.network.name which should be the one we're handling.
         sliced.shift

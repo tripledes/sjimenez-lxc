@@ -15,7 +15,11 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newparam(:index) do
     desc 'Index for interface configuration'
-    newvalues(/[1-9]+/)
+    newvalues(/^0$|^[1-9]+$/)
+  end
+
+  newproperty(:device_name) do
+    desc 'Device name for the interface'
   end
 
   newproperty(:link) do
