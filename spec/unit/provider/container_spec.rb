@@ -93,6 +93,54 @@ describe Puppet::Type.type(:lxc).provider(:container) do
     end
   end
 
+  describe '#autostart' do
+    it 'will return true when container autostart is enabled' do
+      @provider.container.stubs(:config_item).with('lxc.start.auto').returns('1')
+      @provider.send(:autostart).should == true
+    end
+    it 'will set autostart on/off' do
+      @provider.container.stubs(:set_config_item).with('lxc.start.auto','1')
+      @provider.container.stubs(:save_config)
+      @provider.send(:autostart=,true).should == true
+    end
+  end
+
+  describe '#autostart_delay' do
+    it 'will return the delay if present' do
+      @provider.container.stubs(:config_item).with('lxc.start.delay').returns('10')
+      @provider.send(:autostart_delay).should == '10'
+    end
+    it 'will set auto start delay value' do
+      @provider.container.stubs(:set_config_item).with('lxc.start.delay','10')
+      @provider.container.stubs(:save_config)
+      @provider.send(:autostart_delay=,'10').should == true
+    end
+  end
+
+  describe '#autostart_order' do
+    it 'will return the order value for the container' do
+      @provider.container.stubs(:config_item).with('lxc.start.order').returns('100')
+      @provider.send(:autostart_order).should == '100'
+    end
+    it 'will the order for the container' do
+      @provider.container.stubs(:set_config_item).with('lxc.start.order','100')
+      @provider.container.stubs(:save_config)
+      @provider.send(:autostart_order=,'100').should == true
+    end
+  end
+
+  describe '#groups' do
+    it 'will return an Array with all the groups' do
+      @provider.container.stubs(:config_item).with('lxc.group').returns(['onboot','app01'])
+      @provider.send(:groups).should == ['onboot','app01']
+    end
+    it 'will set the groups value' do
+      @provider.container.stubs(:set_config_item).with('lxc.group',['onboot','app01'])
+      @provider.container.stubs(:save_config)
+      @provider.send(:groups=,['onboot','app01']).should == true
+    end
+  end
+
   describe '#ipv4' do
     it 'will fail as ipv4 is no longer supported' do
       @provider.container.stubs('ipv4')
@@ -106,5 +154,4 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       expect{@provider.ipv4_gateway}.to raise_error
     end
   end
-
 end

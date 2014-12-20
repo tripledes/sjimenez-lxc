@@ -126,6 +126,85 @@ Puppet::Type.type(:lxc).provide(:container) do
     @container.state
   end
 
+  # Getters/setters
+  def autostart
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    return true if @container.config_item('lxc.start.auto') == '1'
+    return false
+  end
+
+  def autostart_delay
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    return @container.config_item('lxc.start.delay')
+  end
+
+  def autostart_order
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    return @container.config_item('lxc.start.order')
+  end
+
+  def groups
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    return @container.config_item('lxc.group')
+  end
+
+  def autostart=(value)
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    case value
+    when true
+      @container.set_config_item('lxc.start.auto','1')
+    else
+      @container.set_config_item('lxc.start.auto','0')
+    end
+    @container.save_config
+    true
+  end
+
+  def autostart_delay=(value)
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    @container.set_config_item('lxc.start.delay',value)
+    @container.save_config
+    true
+  end
+
+  def autostart_order=(value)
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    @container.set_config_item('lxc.start.order',value)
+    @container.save_config
+    true
+  end
+
+  def groups=(value)
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+
+    @container.set_config_item('lxc.group',value)
+    @container.save_config
+    true
+  end
+
   private
   def restart
     self.stop
