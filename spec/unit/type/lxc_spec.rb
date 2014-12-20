@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:lxc), 'when validating attributes' do
-  [:ensure, :state, :autostart, :autostart_delay, :autostart_order, :autostart_group].each do |prop|
+  [:ensure, :state, :autostart, :autostart_delay, :autostart_order, :groups].each do |prop|
     it "should have a #{prop} property" do
       Puppet::Type.type(:lxc).attrtype(prop).should == :property
     end
@@ -125,9 +125,9 @@ describe Puppet::Type.type(:lxc), 'when validating attribute values' do
     }.to raise_error
   end
 
-  it 'should fail when autostart_group is not Array' do
+  it 'should fail when groups is not Array' do
     expect {
-      Puppet::Type.type(:lxc).new(:name => 'lol_container', :autostart_group => 'blehbleh')
+      Puppet::Type.type(:lxc).new(:name => 'lol_container', :groups => 'blehbleh')
     }.to raise_error
   end
 end

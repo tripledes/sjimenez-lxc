@@ -69,11 +69,11 @@ Puppet::Type.newtype(:lxc) do
     newvalues(/^[1-9]+$/)
   end
 
-  newproperty(:autostart_group) do
+  newproperty(:groups) do
     desc 'A multi-value key (can be used multiple times) to put the container in a container group'
     validate do |value|
       unless value.kind_of?Array
-        raise ArgumentError, "autostart_group is #{value.class}, expected Array"
+        raise ArgumentError, "groups is #{value.class}, expected Array"
       end
     end
   end
