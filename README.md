@@ -16,7 +16,7 @@
 ## Overview
 
 This module handles LXC (Linux Containers) from Puppet.
-It is being developed and tested under Ubuntu 14.04 and Puppet >= 3.6.2.
+It is being developed and tested under Ubuntu 14.04/12.04 and Puppet >= 3.6.2.
 
 ## Module Description
 
@@ -34,18 +34,22 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
 * Defines the container itself, allows the following parameters/properties:
   * name: container's name.
   * template: template to be used during container creation.
+  * template_options: array with template's extra options. Use must make sure they are valid.
   * timeout: timeout (in seconds) to wait for container opertions to complete.
   * storage_backend: dir, lvm, btrfs, loop  or best.
   * storage_options: options to be passed to the chosen storage backend.
   * state: running, stopped or frozen.
-  * ipv4: IPv4 address for eth0 (can be string or array).
-  * ipv4_gateway: default IPv4 gateway.
   * restart: whether to restart the container after applying network configuration.
+  * autostart: enable/disable starting the container at boot time.
+  * autostart_delay: time to wait before starting next container.
+  * autostart_order: position on which the container will be started.
+  * groups: array with all the container's groups.
+
 
 ### lxc_interface
 
-* Defines network interfaces other than eth0 and allows the following paramters/properties:
-  * name: eth1, eth2...
+* Defines network interfaces and allows the following paramters/properties:
+  * name: eth0, eth1...
   * container: container's name.
   * index: index number for the interface.
   * link: host interface where to link the container interface.
@@ -68,6 +72,7 @@ include 'lxc'
 lxc { 'ubuntu_test':
   ensure          => running,
   template        => 'ubuntu',
+  template_options => ['--mirror','http://de.archive.ubuntu.com/ubuntu'],
   ipv4            => '10.0.3.2/24',
   ipv4_gateway    => '10.0.3.1',
   storage_backend => 'lvm',
@@ -75,11 +80,24 @@ lxc { 'ubuntu_test':
 }
 
 # Will configure eth1 on container 'ubuntu_test', with two different IP addresses
-lxc_interface { 'eth1':
+lxc_interface { 'public':
+  name         => 'eth0',
+  ensure       => present,
+  container    => 'ubuntu_test',
+  index        => 0,
+  link         => 'lxcbr0',
+  type         => 'veth',
+  ipv4         => '10.0.3.2/24',
+  ipv4_gateway => '10.0.3.1',
+  restart      => true,
+}
+
+lxc_interface { 'private':
+  name      => 'eth1',
   ensure    => present,
   container => 'ubuntu_test',
   index     => 1,
-  link      => 'lxcbr0',
+  link      => 'lxcbr1',
   type      => 'veth',
   ipv4      => ['192.168.200.5/16','192.168.100.10/24'],
   restart   => true,
@@ -87,27 +105,20 @@ lxc_interface { 'eth1':
 ```
 
 ## NOTES
+* Precise uses by default Ruby 1.8 and seems Puppet is not able to load new gems while applying
+  the catalog, in this case, the types this module provides will be available on the 2nd
+  Puppet run after the bindings are installed.
 
-* ```lxc``` provider will use the defaults from file */etc/lxc/default*
-(on Ubuntu) to get network type and link default configuration, this should
-change in future releases allowing to customize it as ```lxc_interface``` does.
-
-* ```ipv4``` parameter on ```lxc``` provider might not work as expected if the
-template in use configures network on the container to use DHCP. The container
-will have 2 (or several) IPs on the first interface.
-
-* All the networking settings, both in ```lxc``` and ```lxc_interface``` are only
-applied/checked to/from the container's configuration file, for it to take effect the
-container must be restarted (stopped/started), use ```restart => true``` if that's
-what you need.
+* All the networking settings in ```lxc_interface``` are only applied/checked to/from the
+  container's configuration file, for them to take effect the container must be restarted
+  (stopped/started), use ```restart => true``` if that's what you need.
 
 ## TODO
 
-* Add support for Ubuntu precise.
 * Add support for current CentOS releases.
 * Add lxc-cgroup provider.
 * Get rid of duplications.
-* Add Beaker to the game.
+* Fix beaker test for Ubuntu Precise.
 
 ## Limitations
 
