@@ -96,12 +96,12 @@ describe Puppet::Type.type(:lxc).provider(:container) do
   describe '#autostart' do
     it 'will return true when container autostart is enabled' do
       @provider.container.stubs(:config_item).with('lxc.start.auto').returns('1')
-      @provider.send(:autostart).should == true
+      @provider.send(:autostart).should == :true
     end
     it 'will set autostart on/off' do
       @provider.container.stubs(:set_config_item).with('lxc.start.auto','1')
       @provider.container.stubs(:save_config)
-      @provider.send(:autostart=,true).should == true
+      @provider.send(:autostart=,:true).should == true
     end
   end
 

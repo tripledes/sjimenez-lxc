@@ -12,6 +12,10 @@ Puppet::Type.type(:lxc).provide(:container) do
 
     begin
       @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]),0,@resource[:template_options])
+      @container.set_config_item('lxc.start.auto','1') if @resource[:autostart]
+      @container.set_config_item('lxc.start.delay',@resource[:autostart_delay]) if not @resource[:autostart_delay].nil?
+      @container.set_config_item('lxc.start.order',@resource[:autostart_order]) if not @resource[:autostart_order].nil?
+      @container.set_config_item('lxc.group',@resource[:groups]) if @resource[:groups].kind_of?Array
     rescue LXC::Error => e
       fail("Failed to create #{@resource[:name]}: #{e.message}")
     end
@@ -132,8 +136,8 @@ Puppet::Type.type(:lxc).provide(:container) do
       @container = LXC::Container.new(@resource[:name])
     end
 
-    return true if @container.config_item('lxc.start.auto') == '1'
-    return false
+    return :true if @container.config_item('lxc.start.auto') == '1'
+    return :false
   end
 
   def autostart_delay
@@ -166,7 +170,7 @@ Puppet::Type.type(:lxc).provide(:container) do
     end
 
     case value
-    when true
+    when :true
       @container.set_config_item('lxc.start.auto','1')
     else
       @container.set_config_item('lxc.start.auto','0')

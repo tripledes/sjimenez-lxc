@@ -53,31 +53,6 @@ Puppet::Type.newtype(:lxc) do
     end
   end
 
-  newproperty(:autostart) do
-    desc 'Enable auto starting the container at boot time'
-    defaultto false
-    newvalues(:true,:false)
-  end
-
-  newproperty(:autostart_delay) do
-    desc 'How long to wait (in seconds) after the container is started before starting the next one'
-    newvalues(/^[1-9]+$/)
-  end
-
-  newproperty(:autostart_order) do
-    desc 'An integer used to sort the containers when auto-starting a series of containers at once'
-    newvalues(/^[1-9]+$/)
-  end
-
-  newproperty(:groups) do
-    desc 'A multi-value key (can be used multiple times) to put the container in a container group'
-    validate do |value|
-      unless value.kind_of?Array
-        raise ArgumentError, "groups is #{value.class}, expected Array"
-      end
-    end
-  end
-
   newproperty(:state) do
     desc 'Whether a container should be running, stopped or frozen.'
 
@@ -103,6 +78,31 @@ Puppet::Type.newtype(:lxc) do
   newparam(:restart) do
     defaultto false
     newvalues(:true,:false)
+  end
+
+  newproperty(:autostart) do
+    desc 'Enable auto starting the container at boot time'
+    defaultto false
+    newvalues(true,false)
+  end
+
+  newproperty(:autostart_delay) do
+    desc 'How long to wait (in seconds) after the container is started before starting the next one'
+    newvalues(/^[1-9]+$/)
+  end
+
+  newproperty(:autostart_order) do
+    desc 'An integer used to sort the containers when auto-starting a series of containers at once'
+    newvalues(/^[1-9]+$/)
+  end
+
+  newproperty(:groups) do
+    desc 'A multi-value key (can be used multiple times) to put the container in a container group'
+    validate do |value|
+      unless value.kind_of?Array
+        raise ArgumentError, "groups is #{value.class}, expected Array"
+      end
+    end
   end
 
   autorequire(:package) do
