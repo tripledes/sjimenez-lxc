@@ -9,6 +9,7 @@ describe 'lxc class' do
         lxc { 'ubuntu_test':
           ensure           => present,
           state            => running,
+          autostart        => true,
           template         => 'ubuntu',
           template_options => ['--mirror', 'http://de.archive.ubuntu.com/ubuntu'],
         }
@@ -40,6 +41,12 @@ describe 'lxc class' do
   end
 
   describe command('lxc-ls --fancy | grep "10.0.3.2"') do
+    its(:exit_status) do
+      should eq 0
+    end
+  end
+
+  describe command('lxc-ls --fancy | grep "ubuntu_test" | grep "YES"') do
     its(:exit_status) do
       should eq 0
     end
