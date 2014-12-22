@@ -59,6 +59,7 @@ class lxc (
   package { $lxc_lxc_package:
     ensure => $lxc_lxc_version,
     tag    => 'lxc_packages',
+    notify => Class['lxc::service'],
   }
 
   package { $lxc_ruby_bindings_deps:
@@ -73,8 +74,5 @@ class lxc (
     require  => Package[$lxc_lxc_package, $lxc_ruby_bindings_deps],
   }
 
-  service { $lxc_lxc_service:
-    ensure => $lxc_lxc_service_ensure,
-    enable => $lxc_lxc_service_enabled,
-  }
+  contain 'lxc::service'
 }

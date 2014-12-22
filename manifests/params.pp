@@ -33,6 +33,7 @@ class lxc::params {
   $lxc_lxc_service = 'lxc'
   $lxc_lxc_service_ensure = running
   $lxc_lxc_service_enabled = true
+  $network_default_conf = '/etc/lxc/default.conf'
 
 }
 
