@@ -31,6 +31,9 @@ describe 'lxc class' do
       EOS
 
       # Run it twice and test for idempotency
+      if fact('lsbdistcodename') == 'precise'
+        apply_manifest(pp)
+      end
       apply_manifest(pp, :catch_failures => true)
       expect(apply_manifest(pp, :catch_changes => true).exit_code).to be_zero
     end
