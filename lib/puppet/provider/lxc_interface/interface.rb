@@ -197,8 +197,8 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
         else
           ips = sliced[0..(next_block_idx - 1)]
         end
-        ips.select! { |b| b =~ /lxc.network.ipv4 =/ }
-        ips.collect { |m| m.split('=').last.strip }
+        aux = ips.select { |b| b =~ /lxc.network.ipv4 =/ }
+        aux.collect { |m| m.split('=').last.strip }
       else
         @container.config_item("lxc.network.#{@resource[:index]}.ipv4").first
       end
