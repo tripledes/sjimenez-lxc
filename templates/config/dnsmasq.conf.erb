@@ -1,0 +1,5 @@
+<% if @local_lxc_networking_nat_dhcp_options -%>
+<% @local_lxc_networking_nat_dhcp_options.each do |k,v| -%>
+<%= k -%>=<%= v %>
+<% end -%>
+<% end -%>

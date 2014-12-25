@@ -1,4 +1,9 @@
-lxc.network.type = <%= @networking_type %>
-lxc.network.link = <%= @networking_device_link %>
-lxc.network.flags = <%= @networking_flags %>
-lxc.network.hwaddr = <%= @networking_hwaddr %>
+lxc.network.type = <%= scope['lxc::lxc_networking_type'] %>
+lxc.network.link = <%= scope['lxc::lxc_networking_device_link'] %>
+lxc.network.flags = <%= scope['lxc::lxc_networking_flags'] %>
+lxc.network.hwaddr = <%= scope['lxc::lxc_networking_hwaddr'] %>
+<% if @local_lxc_networking_extra_options -%>
+<% @local_lxc_networking_extra_options.each do |k,v| -%>
+<%= k -%> = <%= v %>
+<% end -%>
+<% end -%>

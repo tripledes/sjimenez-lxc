@@ -1,0 +1,13 @@
+USE_LXC_BRIDGE="true"
+LXC_BRIDGE="<%= scope['lxc::lxc_networking_nat_bridge'] -%>"
+LXC_ADDR="<%= scope['lxc::lxc_networking_nat_address'] -%>"
+LXC_NETMASK="<%= scope['lxc::lxc_networking_nat_mask'] -%>"
+LXC_NETWORK="<%= scope['lxc::lxc_networking_nat_network'] -%>"
+LXC_DHCP_RANGE="<%= scope['lxc::lxc_networking_nat_dhcp_range'] -%>"
+LXC_DHCP_MAX="<%= scope['lxc::lxc_networking_nat_max_hosts'] -%>"
+<% if @local_lxc_networking_nat_dhcp_conf -%>
+LXC_DHCP_CONFILE=<%= @local_lxc_networking_nat_dhcp_config %>
+<% end -%>
+<% if @local_lxc_networking_nat_dns_domain -%>
+LXC_DOMAIN="<%= @local_lxc_networking_nat_dns_domain -%>"
+<% end -%>

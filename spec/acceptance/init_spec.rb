@@ -4,23 +4,30 @@ describe 'lxc class' do
   describe 'running puppet code' do
     it 'should work with no errors' do
       pp = <<-EOS
-        include 'lxc'
+        class { 'lxc':
+          lxc_networking_nat_address        => '10.0.4.1',
+          lxc_networking_nat_mask           => '255.255.255.0',
+          lxc_networking_nat_network        => '10.0.4.0/24',
+          lxc_networking_nat_dhcp_range     => '10.0.4.2,10.0.4.254',
+        }
 
         lxc { 'ubuntu_test':
           ensure           => present,
           state            => running,
           autostart        => true,
           template         => 'ubuntu',
-          template_options => ['--mirror', 'http://de.archive.ubuntu.com/ubuntu'],
+          template_options => ['--mirror', 'http://10.0.2.2:3142/ubuntu'],
         }
 
         lxc_interface { 'public':
-          container   => 'ubuntu_test',
-          index       => 0,
-          device_name => 'eth0',
-          ipv4        => '10.0.3.2/24',
-          restart     => true,
+          container    => 'ubuntu_test',
+          index        => 0,
+          device_name  => 'eth0',
+          ipv4         => '10.0.3.2/24',
+          restart      => true,
         }
+
+        Class['lxc'] -> Lxc<||> -> Lxc_interface<||>
       EOS
 
       # Run it twice and test for idempotency
@@ -49,6 +56,18 @@ describe 'lxc class' do
   describe command('lxc-ls --fancy | grep "ubuntu_test" | grep "YES"') do
     its(:exit_status) do
       should eq 0
+    end
+  end
+
+  describe command('grep veth /etc/lxc/default.conf') do
+    its(:exit_status) do
+      should eq 0
+    end
+  end
+
+  describe interface('lxcbr0') do
+    it do
+      should have_ipv4_address('10.0.4.1')
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'lxc::networking::containers', :type => :class do
+describe 'lxc::networking::nat', :type => :class do
   context 'with default parameters' do
     let(:facts) do
       {
