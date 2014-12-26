@@ -17,7 +17,7 @@
 #   Package for installing lxc tools and libraries. Defaults to lxc.
 #
 # [*lxc_lxc_version*]
-#   Version for *lxc_lxc_package*. Defaults to 1.0.5-0ubuntu0.1
+#   Version for $lxc_lxc_package. Defaults to latest.
 #
 # [*lxc_lxc_service*]
 #   Name for lxc service. Defaults to lxc.
@@ -38,48 +38,49 @@
 #   The networking type containers will use by default, i.e. veth.
 #
 # [*lxc_networking_flags*]
-#   Networking flags, up activates the interface.
+#   Networking flags, up activates the interface. Defaults to 'up'.
 #
 # [*lxc_networking_hwaddr*]
 #   The parameter controls a fixed part of the MAC address, to randomly generate
-#   containers new MACs.
+#   containers new MACs. Defaults to '00:16:3e:xx:xx:xx'.
 #
 # [*lxc_networking_nat_bridge*]
-#   Bridge to be used as link device for containers.
+#   Bridge to be used as link device for containers. Default is 'lxcbr0'.
 #
 # [*lxc_networking_nat_address*]
-#   Address for the bridge.
+#   Address for the bridge. Default '10.0.3.1'.
 #
 # [*lxc_networking_nat_mask*]
-#   Mask address for the bridge.
+#   Mask address for the bridge. Default '255.255.255.0'.
 #
 # [*lxc_networking_nat_network*]
-#   Network address for the bridge.
+#   Network address for the bridge. Default '10.0.3.0/24'.
 #
 # [*lxc_networking_nat_dhcp_range*]
-#   DHCP range, comman-separated.
+#   DHCP range, comman-separated. Default '10.0.3.2,10.0.3.254'.
 #
 # [*lxc_networking_nat_max_hosts*]
-#   Maximum number of hosts to be assigned by the DHCP server.
+#   Maximum number of hosts to be assigned by the DHCP server. Default 253.
 #
 # [*lxc_networking_nat_dns_domain*]
-#   DNS domain to be assigned by the DHCP server.
+#   DNS domain to be assigned by the DHCP server. Default undef.
 #
 # [*lxc_networking_nat_dhcp_conf*]
-#   Configuration file to be used for LXC's DHCP server.
+#   Configuration file to be used for LXC's DHCP server. Default undef.
 #
 # [*lxc_networking_nat_dhcp_options*]
 #   A hash with DHCP specific options, it will be used to create
 #   the file pointed by $networking_nat_dhcp_conf. The end result
-#   will be in the format key=value.
+#   will be in the format key=value. Default undef.
 #
 # [*lxc_networking_nat_update_dnsmasq*]
 #   Whether to update system-wide dnsmasq instance to avoid it binding
-#   on $lxc_networking_nat_bridge.
+#   on $lxc_networking_nat_bridge. Default false.
 #
 # [*lxc_networking_nat_dnsmasq_conf*]
 #   System-wide dnsmasq configuration file, where except-interface setting
-#   will be modified with $lxc_networking_nat_bridge value.
+#   will be modified with $lxc_networking_nat_bridge value. Default
+#   /etc/dnsmasq.d/lxc.
 #
 # === Examples
 #
