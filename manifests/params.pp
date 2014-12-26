@@ -1,3 +1,14 @@
+# == Class: lxc::params
+#
+# This class defines defaults based on $::operatingsystem.
+#
+# === Authors
+#
+# Sergio Jimenez <tripledes@gmail.com>
+#
+# === Copyright
+#
+# Copyright 2014 Sergio Jimenez, unless otherwise noted.
 #
 class lxc::params {
   case $::operatingsystem {

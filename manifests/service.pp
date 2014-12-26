@@ -1,10 +1,6 @@
 # == Class: lxc::service
 #
-# This class manages LXC service state
-#
-# === Examples
-#
-#  include lxc::service
+# This class manages LXC service state.
 #
 # === Authors
 #
