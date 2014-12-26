@@ -172,6 +172,19 @@ describe Puppet::Type.type(:lxc_interface).provider(:interface), 'basic interfac
     end
   end
 
+  describe '#ipv4_gateway' do
+    it 'will return 192.168.1.254' do
+      @provider.container.stubs(:config_item).with('lxc.network.1.ipv4_gateway').returns('192.168.1.254')
+      @provider.send(:ipv4_gateway).should == '192.168.1.254'
+    end
+    it 'will return true when the setter successfully changes the value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.network.1.ipv4_gateway')
+      @provider.container.stubs(:set_config_item).with('lxc.network.1.ipv4.gateway','192.168.1.253')
+      @provider.container.stubs(:save_config)
+      @provider.send(:ipv4_gateway=,'192.168.1.253').should == true
+    end
+  end
+
   describe '#hwaddr' do
     it 'should return 00:de:ad:be:ef:00 from the getter' do
       @provider.container.stubs(:config_item).with('lxc.network.1.hwaddr').returns('00:de:ad:be:ef:00')

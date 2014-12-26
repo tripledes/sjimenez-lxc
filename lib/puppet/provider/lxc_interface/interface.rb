@@ -223,6 +223,30 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
     end
   end
 
+  # TODO: There is an inconsistency in liblxc, https://github.com/lxc/lxc/pull/337
+  # thus, ipv4_gateway should detect version and work properly if the PR gets merged in.
+  def ipv4_gateway
+    begin
+      define_container
+      @container.config_item("lxc.network.#{@resource[:index]}.ipv4_gateway")
+    rescue LXC::Error
+      ""
+    end
+  end
+
+  def ipv4_gateway=(value)
+    begin
+      define_container
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.ipv4_gateway")
+      @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4.gateway",value)
+      @container.save_config
+      restart if @resource[:restart]
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
   def hwaddr
     begin
       define_container
