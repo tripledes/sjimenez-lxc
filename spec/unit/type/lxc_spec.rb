@@ -8,12 +8,18 @@ describe Puppet::Type.type(:lxc), 'when validating attributes' do
   end
 
   [:ipv4, :ipv4_gateway].each do |noprop|
-    it "should have a #{noprop} property" do
+    it "should not have a #{noprop} property" do
       Puppet::Type.type(:lxc).attrtype(noprop).should_not == :property
     end
   end
 
-  [:name, :template, :template_options, :timeout, :storage_backend, :storage_options, :restart].each do |param|
+  [:restart].each do |noparam|
+    it "should not have a #{noparam} parameter" do
+      Puppet::Type.type(:lxc).attrtype(noparam).should_not == :param
+    end
+  end
+
+  [:name, :template, :template_options, :timeout, :storage_backend, :storage_options].each do |param|
     it "should have a #{param} parameter" do
       Puppet::Type.type(:lxc).attrtype(param).should == :param
     end
@@ -99,12 +105,6 @@ describe Puppet::Type.type(:lxc), 'when validating attribute values' do
     expect {
       Puppet::Type.type(:lxc).new(:name => 'lol_container', :state => :running, :storage_backend => :lvm, :storage_options => storage_options)
     }.to_not raise_error
-  end
-
-  it 'should fail when restart is not boolean' do
-    expect {
-      Puppet::Type.type(:lxc).new(:name => 'lol_container', :restart => 'blahblah')
-    }.to raise_error
   end
 
   it 'should fail when autostart is not boolean' do

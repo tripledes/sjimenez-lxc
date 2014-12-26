@@ -210,11 +210,6 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   private
-  def restart
-    self.stop
-    self.start
-  end
-
   def symbolize_hash hash
     result = {}
     if hash.nil?
