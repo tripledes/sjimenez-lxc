@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:lxc_interface), 'when validating attributes' do
-  [:ensure,:device_name,:link,:type,:ipv4,:vlan_id,:macvlan_mode,:hwaddr].each do |prop|
+  [:ensure,:device_name,:link,:type,:ipv4,:ipv4_gateway,:vlan_id,:macvlan_mode,:hwaddr].each do |prop|
     it "should have a #{prop} property" do
       Puppet::Type.type(:lxc_interface).attrtype(prop).should == :property
     end

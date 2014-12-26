@@ -6,7 +6,7 @@ Puppet::Type.newtype(:lxc_interface) do
   ensurable
 
   newparam(:name, :namevar => true) do
-    desc 'Interface name'
+    desc 'Just a name'
   end
 
   newparam(:container) do
@@ -94,6 +94,17 @@ Puppet::Type.newtype(:lxc_interface) do
       return (is == @should.flatten or is == @should.collect { |v| v.to_s }) if match_all?
       @should.each { |val| return true if is == val or is == val.to_s }
       false
+    end
+  end
+
+  newproperty(:ipv4_gateway) do
+    desc 'Gateway IPv4 address'
+    validate do |value|
+      begin
+        IPAddr.new(value)
+      rescue ArgumentError
+        raise ArgumentError, 'Invalid gateway IPv4 address'
+      end
     end
   end
 
