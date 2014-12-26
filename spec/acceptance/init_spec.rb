@@ -9,6 +9,9 @@ describe 'lxc class' do
           lxc_networking_nat_mask           => '255.255.255.0',
           lxc_networking_nat_network        => '10.0.4.0/24',
           lxc_networking_nat_dhcp_range     => '10.0.4.2,10.0.4.254',
+          lxc_networking_nat_dns_domain     => 'local.lxc',
+          lxc_networking_nat_dhcp_conf      => '/etc/lxc/dnsmasq.conf',
+          lxc_networking_nat_dhcp_options   => {'dhcp-host' => 'mail1,10.0.4.100'},
         }
 
         lxc { 'ubuntu_test':
@@ -65,6 +68,30 @@ describe 'lxc class' do
   describe command('grep veth /etc/lxc/default.conf') do
     its(:exit_status) do
       should eq 0
+    end
+  end
+
+  describe command('grep mail1 /etc/lxc/dnsmasq.conf') do
+    its(:exit_status) do
+      should eq 0
+    end
+  end
+
+  describe command("grep 'local\.lxc' /etc/default/lxc-net") do
+    its(:exit_status) do
+      should eq 0
+    end
+  end
+
+  describe service('lxc') do
+    it do
+      should be_enabled
+    end
+  end
+
+  describe service('lxc-net') do
+    it do
+      should be_enabled
     end
   end
 
