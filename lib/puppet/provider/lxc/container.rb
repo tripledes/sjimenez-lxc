@@ -6,9 +6,7 @@ Puppet::Type.type(:lxc).provide(:container) do
   attr_accessor :container, :lxc_version
 
   def create
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
+    define_container
 
     begin
       @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]),0,@resource[:template_options])
@@ -33,16 +31,12 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def exists?
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
+    define_container
     @container.defined?
   end
 
   def destroy
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
+    define_container
 
     case self.status
     when :running
@@ -61,9 +55,7 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def start
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
+    define_container
     begin
       if self.status == :frozen
         self.unfreeze
@@ -78,10 +70,7 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def stop
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     begin
       @container.stop
       @container.wait(:stopped, @resource[:timeout])
@@ -92,10 +81,7 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def freeze
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     begin
       unless self.status == :frozen
         @container.freeze
@@ -108,10 +94,7 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def unfreeze
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     begin
       if self.status == :frozen
         @container.unfreeze
@@ -124,51 +107,34 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def status
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
+    define_container
     @container.state
   end
 
   # Getters/setters
   def autostart
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     return :true if @container.config_item('lxc.start.auto') == '1'
     return :false
   end
 
   def autostart_delay
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     return @container.config_item('lxc.start.delay')
   end
 
   def autostart_order
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     return @container.config_item('lxc.start.order')
   end
 
   def groups
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     return @container.config_item('lxc.group')
   end
 
   def autostart=(value)
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     case value
     when :true
       @container.set_config_item('lxc.start.auto','1')
@@ -180,36 +146,33 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def autostart_delay=(value)
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     @container.set_config_item('lxc.start.delay',value)
     @container.save_config
     true
   end
 
   def autostart_order=(value)
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     @container.set_config_item('lxc.start.order',value)
     @container.save_config
     true
   end
 
   def groups=(value)
-    unless @container
-      @container = LXC::Container.new(@resource[:name])
-    end
-
+    define_container
     @container.set_config_item('lxc.group',value)
     @container.save_config
     true
   end
 
   private
+  def define_container
+    unless @container
+      @container = LXC::Container.new(@resource[:name])
+    end
+  end
+
   def symbolize_hash hash
     result = {}
     if hash.nil?
