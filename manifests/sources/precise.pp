@@ -11,6 +11,9 @@
 # Copyright 2014 Sergio Jimenez, unless otherwise noted.
 #
 class lxc::sources::precise {
+
+  private()
+
   contain 'apt'
 
   apt::ppa { 'lxc':

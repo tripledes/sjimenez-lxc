@@ -11,9 +11,8 @@
 # Copyright 2014 Sergio Jimenez, unless otherwise noted.
 #
 class lxc::service {
-  if $caller_module_name != $module_name {
-    fail('Lxc::service is not a public class')
-  }
+
+  private()
 
   service { $lxc::lxc_lxc_service:
     ensure => $lxc::lxc_lxc_service_ensure,

@@ -12,9 +12,7 @@
 #
 class lxc::networking::containers inherits lxc::params {
 
-  if $caller_module_name != $module_name {
-    fail('Class lxc::networking::containers is private')
-  }
+  private()
 
   if empty($lxc::lxc_networking_device_link) and
     empty($lxc::lxc_networking_type) {

@@ -12,9 +12,7 @@
 #
 class lxc::networking::nat inherits lxc::params {
 
-  if $caller_module_name != $module_name {
-    fail('Class lxc::networking::nat is private')
-  }
+  private()
 
   case $lxc::lxc_networking_nat_enable {
     true: {
