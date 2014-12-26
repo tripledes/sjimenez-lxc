@@ -83,7 +83,7 @@ Puppet::Type.newtype(:lxc) do
   newproperty(:autostart) do
     desc 'Enable auto starting the container at boot time'
     defaultto false
-    newvalues(true,false)
+    newvalues(:true,:false)
   end
 
   newproperty(:autostart_delay) do
