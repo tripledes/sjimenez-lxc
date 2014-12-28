@@ -10,6 +10,7 @@ Puppet::Type.newtype(:lxc) do
   newparam(:template) do
     desc 'Template on which the container will be based.'
     defaultto 'ubuntu'
+    newvalues(/\w+/)
   end
 
   newparam(:template_options) do
@@ -24,6 +25,7 @@ Puppet::Type.newtype(:lxc) do
   newparam(:timeout) do
     desc 'Timeout in seconds for container operations.'
     defaultto 10
+    newvalues(/\d+/)
   end
 
   newparam(:storage_backend) do
