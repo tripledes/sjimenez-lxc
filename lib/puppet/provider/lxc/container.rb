@@ -55,8 +55,8 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def start
-    define_container
     begin
+      define_container
       if self.status == :frozen
         self.unfreeze
       else
@@ -70,8 +70,8 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def stop
-    define_container
     begin
+      define_container
       @container.stop
       @container.wait(:stopped, @resource[:timeout])
     rescue StandardError => e
@@ -81,8 +81,8 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def freeze
-    define_container
     begin
+      define_container
       unless self.status == :frozen
         @container.freeze
         @container.wait(:frozen, @resource[:timeout])
@@ -94,8 +94,8 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def unfreeze
-    define_container
     begin
+      define_container
       if self.status == :frozen
         @container.unfreeze
         @container.wait(:running, @resource[:timeout])
@@ -107,63 +107,102 @@ Puppet::Type.type(:lxc).provide(:container) do
   end
 
   def status
-    define_container
-    @container.state
+    begin
+      define_container
+      @container.state
+    rescue LXC::Error
+      ""
+    end
   end
 
   # Getters/setters
   def autostart
-    define_container
-    return :true if @container.config_item('lxc.start.auto') == '1'
-    return :false
-  end
-
-  def autostart_delay
-    define_container
-    return @container.config_item('lxc.start.delay')
-  end
-
-  def autostart_order
-    define_container
-    return @container.config_item('lxc.start.order')
-  end
-
-  def groups
-    define_container
-    return @container.config_item('lxc.group')
+    begin
+      define_container
+      return :true if @container.config_item('lxc.start.auto') == '1'
+      return :false
+    rescue LXC::Error
+      ""
+    end
   end
 
   def autostart=(value)
-    define_container
-    case value
-    when :true
-      @container.set_config_item('lxc.start.auto','1')
-    else
-      @container.set_config_item('lxc.start.auto','0')
+    begin
+      define_container
+      @container.clear_config_item('lxc.start.auto')
+      case value
+      when :true
+        @container.set_config_item('lxc.start.auto','1')
+      else
+        @container.set_config_item('lxc.start.auto','0')
+      end
+      @container.save_config
+      true
+    rescue LXC::Error
+      false
     end
-    @container.save_config
-    true
+  end
+
+  def autostart_delay
+    begin
+      define_container
+      @container.config_item('lxc.start.delay')
+    rescue LXC::Error
+      ""
+    end
   end
 
   def autostart_delay=(value)
-    define_container
-    @container.set_config_item('lxc.start.delay',value)
-    @container.save_config
-    true
+    begin
+      define_container
+      @container.clear_config_item('lxc.start.delay')
+      @container.set_config_item('lxc.start.delay',value)
+      @container.save_config
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
+  def autostart_order
+    begin
+      define_container
+      @container.config_item('lxc.start.order')
+    rescue LXC::Error
+      ""
+    end
   end
 
   def autostart_order=(value)
-    define_container
-    @container.set_config_item('lxc.start.order',value)
-    @container.save_config
-    true
+    begin
+      define_container
+      @container.clear_config_item('lxc.start.order')
+      @container.set_config_item('lxc.start.order',value)
+      @container.save_config
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
+  def groups
+    begin
+      define_container
+      @container.config_item('lxc.group')
+    rescue LXC::Error
+      ""
+    end
   end
 
   def groups=(value)
-    define_container
-    @container.set_config_item('lxc.group',value)
-    @container.save_config
-    true
+    begin
+      define_container
+      @container.set_config_item('lxc.group',value)
+      @container.save_config
+      true
+    rescue LXC::Error
+      false
+    end
   end
 
   private
