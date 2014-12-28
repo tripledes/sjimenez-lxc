@@ -11,6 +11,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newparam(:container) do
     desc 'Name of the container'
+    newvalues(/\w+/)
   end
 
   newparam(:index) do
@@ -20,19 +21,17 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newproperty(:device_name) do
     desc 'Device name for the interface'
+    newvalues(/\w+/)
   end
 
   newproperty(:link) do
     desc 'Host interface where to link the container interface'
+    newvalues(/\w+/)
   end
 
   newproperty(:vlan_id) do
     desc 'VLAN ID to use with network type is vlan'
-    validate do |value|
-      unless value =~ /\d+/
-        raise ArgumentError, 'Invalid VLAN ID, it is not numeric'
-      end
-    end
+    newvalues(/\d+/)
   end
 
   newproperty(:macvlan_mode) do
@@ -110,11 +109,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
   newproperty(:hwaddr) do
     desc 'MAC address for the interface'
-    validate do |value|
-      unless value =~ /^([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}$/i
-        raise ArgumentError, 'Invalid hardware address'
-      end
-    end
+    newvalues(/^([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}$/i)
   end
 
   newparam(:restart) do
@@ -129,5 +124,6 @@ Puppet::Type.newtype(:lxc_interface) do
   validate do
     raise ArgumentError, 'Index parameter is required' if self[:index].nil?
     raise ArgumentError, 'Container parameter is required' if self[:container].nil?
+    raise ArgumentError, 'device_name parameter is required' if self[:device_name].nil?
   end
 end
