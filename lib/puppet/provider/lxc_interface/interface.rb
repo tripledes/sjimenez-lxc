@@ -44,12 +44,6 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
     end
   end
 
-  def define_container
-    unless @container
-      @container = LXC::Container.new(@resource[:container])
-    end
-  end
-
   # getters and setters
 
   def device_name
@@ -272,8 +266,13 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
   end
 
   private
+  def define_container
+    unless @container
+      @container = LXC::Container.new(@resource[:container])
+    end
+  end
+
   def restart
-    # TODO: make timeout a parameter defaultto 10
     @container.stop
     @container.wait(:stopped, 10)
     @container.start
