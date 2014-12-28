@@ -99,9 +99,15 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       @provider.send(:autostart).should == :true
     end
     it 'will set autostart on/off' do
+      @provider.container.stubs(:clear_config_item).with('lxc.start.auto')
       @provider.container.stubs(:set_config_item).with('lxc.start.auto','1')
       @provider.container.stubs(:save_config)
       @provider.send(:autostart=,:true).should == true
+    end
+    it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.start.auto')
+      @provider.container.stubs(:set_config_item).raises(LXC::Error)
+      @provider.send(:autostart=,:true).should == false
     end
   end
 
@@ -111,9 +117,15 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       @provider.send(:autostart_delay).should == '10'
     end
     it 'will set auto start delay value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.start.delay')
       @provider.container.stubs(:set_config_item).with('lxc.start.delay','10')
       @provider.container.stubs(:save_config)
       @provider.send(:autostart_delay=,'10').should == true
+    end
+    it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.start.delay')
+      @provider.container.stubs(:set_config_item).raises(LXC::Error)
+      @provider.send(:autostart_delay=,'10').should == false
     end
   end
 
@@ -123,9 +135,15 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       @provider.send(:autostart_order).should == '100'
     end
     it 'will the order for the container' do
+      @provider.container.stubs(:clear_config_item).with('lxc.start.order')
       @provider.container.stubs(:set_config_item).with('lxc.start.order','100')
       @provider.container.stubs(:save_config)
       @provider.send(:autostart_order=,'100').should == true
+    end
+    it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.start.order')
+      @provider.container.stubs(:set_config_item).raises(LXC::Error)
+      @provider.send(:autostart_order=,'100').should == false
     end
   end
 
@@ -135,9 +153,15 @@ describe Puppet::Type.type(:lxc).provider(:container) do
       @provider.send(:groups).should == ['onboot','app01']
     end
     it 'will set the groups value' do
+      @provider.container.stubs(:clear_config_item).with('lxc.group')
       @provider.container.stubs(:set_config_item).with('lxc.group',['onboot','app01'])
       @provider.container.stubs(:save_config)
       @provider.send(:groups=,['onboot','app01']).should == true
+    end
+    it 'setter should return false if LXC::Error is raised' do
+      @provider.container.stubs(:clear_config_item).with('lxc.group')
+      @provider.container.stubs(:set_config_item).raises(LXC::Error)
+      @provider.send(:groups=,['onboot','app01']).should == false
     end
   end
 
