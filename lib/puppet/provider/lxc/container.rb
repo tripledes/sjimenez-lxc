@@ -9,7 +9,7 @@ Puppet::Type.type(:lxc).provide(:container) do
     define_container
 
     begin
-      @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]),0,@resource[:template_options])
+      @container.create(@resource[:template], @resource[:storage_backend].to_s, symbolize_hash(@resource[:storage_options]),LXC::LXC_CREATE_QUIET,@resource[:template_options])
       @container.set_config_item('lxc.start.auto','1') if @resource[:autostart]
       @container.set_config_item('lxc.start.delay',@resource[:autostart_delay]) if not @resource[:autostart_delay].nil?
       @container.set_config_item('lxc.start.order',@resource[:autostart_order]) if not @resource[:autostart_order].nil?
