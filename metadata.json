@@ -7,7 +7,7 @@
   "source": "https://github.com/tripledes/sjimenez-lxc",
   "project_page": "https://github.com/tripledes/sjimenez-lxc",
   "issues_url": "https://github.com/tripledes/sjimenez-lxc/issues",
-  "tags": ["ubuntu","trusty","precise","lxc"],
+  "tags": ["containers","lxc"],
   "operatingsystem_support": [
      {
        "operatingsystem": "Ubuntu",
