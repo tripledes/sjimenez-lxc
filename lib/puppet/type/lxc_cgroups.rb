@@ -8,7 +8,20 @@ Puppet::Type.newtype(:lxc_cgroups) do
 
   newproperty(:value) do
     desc 'Value for limit'
-    newvalues(/\s/)
+    validate do |value|
+      unless value.kind_of?String
+        raise ArgumentError, "Wrong value type: #{value.class}"
+      end
+    end
+  end
+
+  newparam(:container) do
+    desc 'Container name'
+    validate do |value|
+      unless value.kind_of?String
+        raise ArgumentError, "Wrong container name: #{value.class}"
+      end
+    end
   end
 
   newparam(:name, :namevar => true) do
