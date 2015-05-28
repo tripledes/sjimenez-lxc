@@ -199,14 +199,14 @@ lxc_interface { 'public':
 }
 
 lxc_interface { 'private':
-  name      => 'eth1',
-  ensure    => present,
-  container => 'ubuntu_test',
-  index     => 1,
-  link      => 'lxcbr1',
-  type      => 'veth',
-  ipv4      => ['192.168.200.5/16','192.168.100.10/24'],
-  restart   => true,
+  device_name => 'eth1',
+  ensure      => present,
+  container   => 'ubuntu_test',
+  index       => 1,
+  link        => 'lxcbr1',
+  type        => 'veth',
+  ipv4        => ['192.168.200.5/16','192.168.100.10/24'],
+  restart     => true,
 }
 ```
 
