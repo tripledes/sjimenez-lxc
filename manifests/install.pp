@@ -12,7 +12,7 @@
 #
 class lxc::install inherits lxc::params {
 
-  private()
+  assert_private()
 
   $lxc_ruby_bindings_deps = $lxc::lxc_ruby_bindings_provider ? {
     gem     => $lxc::params::lxc_ruby_bindings_gem_deps,

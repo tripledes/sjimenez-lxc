@@ -12,7 +12,7 @@
 #
 class lxc::service {
 
-  private()
+  assert_private()
 
   service { $lxc::lxc_lxc_service:
     ensure => $lxc::lxc_lxc_service_ensure,
