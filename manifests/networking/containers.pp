@@ -12,7 +12,7 @@
 #
 class lxc::networking::containers inherits lxc::params {
 
-  private()
+  assert_private()
 
   if empty($lxc::lxc_networking_device_link) and
     empty($lxc::lxc_networking_type) {
