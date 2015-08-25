@@ -97,6 +97,7 @@
 class lxc (
   $lxc_ruby_bindings_provider        = $lxc::params::lxc_ruby_bindings_provider,
   $lxc_ruby_bindings_package         = $lxc::params::lxc_ruby_bindings_package,
+  $lxc_ruby_bindings_gem_deps        = $lxc::params::lxc_ruby_bindings_gem_deps,
   $lxc_ruby_bindings_version         = $lxc::params::lxc_ruby_bindings_version,
   $lxc_lxc_package                   = $lxc::params::lxc_lxc_package,
   $lxc_lxc_version                   = $lxc::params::lxc_lxc_version,
