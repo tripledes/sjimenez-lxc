@@ -18,5 +18,9 @@ class lxc::service {
     ensure => $lxc::lxc_lxc_service_ensure,
     enable => $lxc::lxc_lxc_service_enabled,
   }
+  service { $lxc::lxc_cgmanager_service:
+    ensure => $lxc::lxc_cgmanager_service_ensure,
+    enable => $lxc::lxc_cgmanager_service_enabled,
+  }
 }
 
