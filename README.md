@@ -152,6 +152,7 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
   * container: container's name.
   * index: index number for the interface.
   * device_name: eth0, eth1, ...
+  * veth_name_host: name of the veth pair device on the host (e.g. containername-eth0)
   * link: host interface where to link the container interface.
   * vlan_id: VLAN ID.
   * macvlan_mode: private, vepa or bridge.
