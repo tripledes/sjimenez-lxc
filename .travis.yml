@@ -18,7 +18,7 @@ matrix:
   - rvm: 1.9.3
     env: PUPPET_GEM_VERSION="~> 3.6"
     gemfile: .gemfile
-  - rvm: 2.0.0
+  - rvm: 2.1
     env: PUPPET_GEM_VERSION="~> 3.6"
     gemfile: .gemfile
 notifications:
