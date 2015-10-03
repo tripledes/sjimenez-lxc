@@ -10,6 +10,9 @@
 # [*lxc_ruby_bindings_package*]
 #   Name for the LXC ruby bindings. Defaults to ruby-lxc.
 #
+# [*lxc_ruby_bindings_gem_deps*]
+#   Name for the LXC ruby bindings gem dependencies. Defaults are distribution and release specific.
+#
 # [*lxc_ruby_bindings_version*]
 #   Version for LXC ruby bindings. Defaults to 1.2.0.
 #
@@ -97,6 +100,7 @@
 class lxc (
   $lxc_ruby_bindings_provider        = $lxc::params::lxc_ruby_bindings_provider,
   $lxc_ruby_bindings_package         = $lxc::params::lxc_ruby_bindings_package,
+  $lxc_ruby_bindings_gem_deps        = $lxc::params::lxc_ruby_bindings_gem_deps,
   $lxc_ruby_bindings_version         = $lxc::params::lxc_ruby_bindings_version,
   $lxc_lxc_package                   = $lxc::params::lxc_lxc_package,
   $lxc_lxc_version                   = $lxc::params::lxc_lxc_version,
