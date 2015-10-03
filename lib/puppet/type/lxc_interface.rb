@@ -20,7 +20,12 @@ Puppet::Type.newtype(:lxc_interface) do
   end
 
   newproperty(:device_name) do
-    desc 'Device name for the interface'
+    desc 'Device name for the interface in the container'
+    newvalues(/\w+/)
+  end
+
+  newproperty(:veth_name_host) do
+    desc 'Name for the veth pair device on the host'
     newvalues(/\w+/)
   end
 

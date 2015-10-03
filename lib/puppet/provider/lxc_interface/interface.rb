@@ -11,6 +11,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.set_config_item("lxc.network.#{@resource[:index]}.type", @resource[:type])
       @container.set_config_item("lxc.network.#{@resource[:index]}.name", @resource[:device_name])
       @container.set_config_item("lxc.network.#{@resource[:index]}.link", @resource[:link]) unless @resource[:link].nil?
+      @container.set_config_item("lxc.network.#{@resource[:index]}.veth.pair", @resource[:veth_name_host]) unless @resource[:veth_name_host].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id", @resource[:vlan_id]) unless @resource[:vlan_id].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode", @resource[:macvlan_mode]) unless @resource[:macvlan_mode].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4", @resource[:ipv4].flatten) unless @resource[:ipv4].nil?
@@ -84,6 +85,36 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       define_container
       @container.clear_config_item("lxc.network.#{@resource[:index]}.link")
       @container.set_config_item("lxc.network.#{@resource[:index]}.link",value)
+      @container.save_config
+      restart if @resource[:restart]
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
+  def veth_name_host
+    begin
+      define_container
+      @container.config_item("lxc.network.#{@resource[:index]}.veth.pair")
+    rescue LXC::Error
+      # TODO: might be better to fail here instead of returning empty string which
+      # would trigger the setter
+      ""
+    end
+  end
+
+  def veth_name_host=(value)
+    begin
+      define_container
+      begin
+        @container.clear_config_item("lxc.network.#{@resource[:index]}.veth.pair")
+      rescue LXC::Error
+        puts "Warning: clear_config_item for lxc.network.veth.pair failed.\n"
+        puts "This might be a bug in lxc_clear_nic only expecting .ipv4 and .ipv6 entries.\n"
+        puts "LXC <1.1 is known to be affected. Please make sure nothing else went wrong.\n"
+      end
+      @container.set_config_item("lxc.network.#{@resource[:index]}.veth.pair",value)
       @container.save_config
       restart if @resource[:restart]
       true
