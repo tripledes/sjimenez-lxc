@@ -9,7 +9,7 @@ before_install:
     exit 101
     EOF
   - sudo chmod 755 /usr/sbin/policy-rc.d
-  - sudo apt-get install -qq build-essential ruby-dev lxc=1.0.7 lxc-dev=1.0.7
+  - sudo apt-get install -qq build-essential ruby-dev lxc-dev
 bundler_args: --without development
 script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation'"
 matrix:
