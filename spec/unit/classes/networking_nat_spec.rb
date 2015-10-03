@@ -10,7 +10,7 @@ describe 'lxc::networking::nat', :type => :class do
     end
 
     it 'will fail cause it is a private class' do
-      expect{ should }.to raise_error
+      expect{ should compile }.to raise_error
     end
   end
 end
