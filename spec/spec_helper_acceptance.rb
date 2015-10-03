@@ -20,6 +20,7 @@ RSpec.configure do |c|
     hosts.each do |host|
       on host, shell('touch /etc/puppet/hiera.yaml')
       on host, puppet('module','install','puppetlabs-apt','--version','1.7.0'), { :acceptable_exit_codes => [0,1] }
+      on host, shell('apt-get update')
     end
   end
 end
