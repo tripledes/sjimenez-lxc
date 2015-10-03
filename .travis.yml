@@ -3,13 +3,13 @@ language: ruby
 before_install:
   - sudo add-apt-repository ppa:ubuntu-lxc/stable -y
   - sudo apt-get update -qq
-  - sudo apt-get install -qq build-essential ruby-dev lxc-dev
   - |
     cat <<EOF | sudo tee /usr/sbin/policy-rc.d
     #!/bin/sh
     exit 101
     EOF
   - sudo chmod 755 /usr/sbin/policy-rc.d
+  - sudo apt-get install -qq build-essential ruby-dev lxc=1.0.7 lxc-dev=1.0.7
 bundler_args: --without development
 script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation'"
 matrix:
