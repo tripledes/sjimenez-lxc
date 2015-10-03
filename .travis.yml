@@ -4,7 +4,8 @@ before_install:
   - sudo add-apt-repository ppa:ubuntu-lxc/stable -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq build-essential ruby-dev lxc-dev
-  - cat <<EOF | sudo tee /usr/sbin/policy-rc.d
+  - |
+    cat <<EOF | sudo tee /usr/sbin/policy-rc.d
     #!/bin/sh
     exit 101
     EOF
