@@ -24,6 +24,7 @@ LXC networking settings. The lxc module adds the following resources to Puppet:
 
  * lxc
  * lxc_interface
+ * lxc_cgroups
 
 For more information about LXC visit: [linuxcontainers.org](https://linuxcontainers.org/).
 
@@ -163,6 +164,15 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
   * hwaddr: MAC.
   * restart: whether to restart the container after applying configuration.
 
+
+#### lxc_cgroups
+
+* Defines cgroup values and allows the following parameters/properties:
+  * name: The actual control file, i.e. 'memory.limit_in_bytes'.
+  * container: container's name.
+  * value: desired value for the control file.
+
+
 ## Usage
 
 ```Puppet
@@ -210,6 +220,11 @@ lxc_interface { 'private':
   ipv4        => ['192.168.200.5/16','192.168.100.10/24'],
   restart     => true,
 }
+
+lxc_cgroups { 'memory.limit_in_bytes':
+  container => 'ubuntu_test',
+  value     => '1073741824',
+}
 ```
 
 ## NOTES
@@ -221,13 +236,18 @@ lxc_interface { 'private':
 ## TODO
 
 * Add support for current CentOS releases.
-* Add lxc-cgroup provider.
+* Improve lxc-cgroup provider.
 * Get rid of duplications.
 
 ## Limitations
 
-The module lxc only works for Ubuntu 14.04, on other platforms with Ruby LXC
-bindings installed, the types should work as expected.
+ * The module lxc only works for Ubuntu 14.04, on other platforms with Ruby LXC
+   bindings installed, the types should work as expected.
+ * The lxc_cgroups provider is really basic, doesn't do much validation and currently it's
+   not ensurable, as it seems not everything inside cgroups has a *reset* value. So,
+   this provider only sets the given value in the given cgroup key.
+ * lxc_groups provider is not able to use values such as 1G, cause when comparing, liblxc
+   returns the values in bytes and puppet will set the value again.
 
 ## Contributions
 
