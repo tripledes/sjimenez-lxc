@@ -126,8 +126,6 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
 
 * `lxc::networking::nat`: This class manages the host networking settings to create a Nat'ed bridge.
 
-* `lxc::sources::precise`: This class manages the LXC PPA for Ubuntu 12.04.
-
 
 ### Resources
 
@@ -216,10 +214,6 @@ lxc_interface { 'private':
 
 ## NOTES
 
- * Precise uses by default Ruby 1.8 and seems Puppet is not able to load new gems while applying
-   the catalog, in this case, the resources this module provides will be available after
-   applying a catalog with the lxc class included.
-
  * All the networking settings in ```lxc_interface``` are only applied/checked to/from the
    container's configuration file, for them to take effect the container must be restarted
    (stopped/started), use ```restart => true``` if that's what you need.
@@ -232,7 +226,7 @@ lxc_interface { 'private':
 
 ## Limitations
 
-The module lxc only works for Ubuntu 14.04 and 12.04, on other platforms with Ruby LXC
+The module lxc only works for Ubuntu 14.04, on other platforms with Ruby LXC
 bindings installed, the types should work as expected.
 
 ## Contributions

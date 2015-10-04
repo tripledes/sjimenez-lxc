@@ -19,15 +19,8 @@ class lxc::params {
             'build-essential', 'ruby-dev', 'lxc-dev', 'libcgmanager0'
           ]
         }
-        'precise': {
-          contain 'lxc::sources::precise'
-          $lxc_ruby_bindings_gem_deps = [
-            'build-essential', 'ruby-dev', 'lxc-dev', 'libcgmanager0',
-            'rubygems'
-          ]
-        }
         default: {
-          fail("Only Ubuntu ${::lsbdistcodename} is not supported by ${module_name}.")
+          fail("Ubuntu ${::lsbdistcodename} is not supported by ${module_name}.")
         }
       }
     }

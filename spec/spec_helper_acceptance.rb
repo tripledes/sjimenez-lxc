@@ -4,7 +4,7 @@ hosts.each do |host|
   on host, "mkdir -p #{host['distmoduledir']}"
 end
 
-SUPPORTED_PLATFORMS = ['trusty','precise']
+SUPPORTED_PLATFORMS = ['trusty']
 
 RSpec.configure do |c|
   # Project root
