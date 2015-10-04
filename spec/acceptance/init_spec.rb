@@ -4,6 +4,10 @@ describe 'lxc class' do
   describe 'running puppet code' do
     it 'should work with no errors' do
       pp = <<-EOS
+        package { 'cgroup-bin':
+          ensure => latest,
+        }
+
         class { 'lxc':
           lxc_networking_nat_address        => '10.0.4.1',
           lxc_networking_nat_mask           => '255.255.255.0',
@@ -30,7 +34,12 @@ describe 'lxc class' do
           restart      => true,
         }
 
-        Class['lxc'] -> Lxc<||> -> Lxc_interface<||>
+        lxc_cgroups { 'memory.limit_in_bytes':
+          container => 'ubuntu_test',
+          value     => '1073741824',
+        }
+
+        Class['lxc'] -> Lxc<||> -> Lxc_interface<||> -> Lxc_cgroups<||>
       EOS
 
       # Run it twice and test for idempotency
@@ -96,5 +105,9 @@ describe 'lxc class' do
     it do
       should have_ipv4_address('10.0.4.1')
     end
+  end
+
+  describe cgroup('lxc/ubuntu_test') do
+    its('memory.limit_in_bytes') { should eq 1073741824 }
   end
 end

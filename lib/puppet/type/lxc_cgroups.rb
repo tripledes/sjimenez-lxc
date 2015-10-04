@@ -1,11 +1,6 @@
 Puppet::Type.newtype(:lxc_cgroups) do
   @doc = 'LXC cgroups manages container limits'
 
-  newproperty(:ensure) do
-    desc 'Ensure state'
-    newvalues :present
-  end
-
   newproperty(:value) do
     desc 'Value for limit'
     validate do |value|
@@ -32,5 +27,9 @@ Puppet::Type.newtype(:lxc_cgroups) do
         raise ArgumentError, "Wrong controller: #{controller}"
       end
     end
+  end
+
+  autorequire(:lxc) do
+    self[:container]
   end
 end
