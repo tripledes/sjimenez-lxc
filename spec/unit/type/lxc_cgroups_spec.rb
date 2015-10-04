@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:lxc_cgroups), 'when validating attributes' do
-  [:ensure, :value].each do |prop|
+  [:value].each do |prop|
     it "should have a #{prop} property" do
       Puppet::Type.type(:lxc_cgroups).attrtype(prop).should == :property
     end

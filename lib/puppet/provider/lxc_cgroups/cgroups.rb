@@ -19,11 +19,11 @@ Puppet::Type.type(:lxc_cgroups).provide(:cgroups) do
     begin
       define_container
       @container.set_cgroup_item(@resource[:name], @resource[:value])
+      return true
     rescue LXC::Error => e
       Puppet.debug(e.message)
       return false
     end
-    @container.cgroup_item(@resource[:name])
   end
 
   private
