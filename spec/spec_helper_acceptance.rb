@@ -19,6 +19,7 @@ RSpec.configure do |c|
     puppet_module_install(:source => proj_root, :module_name => 'lxc')
     hosts.each do |host|
       on host, shell('touch /etc/puppet/hiera.yaml')
+      on host, puppet('module','install','puppetlabs-stdlib')
       on host, shell('apt-get update')
     end
   end
