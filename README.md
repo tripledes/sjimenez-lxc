@@ -161,6 +161,8 @@ For more information about LXC visit: [linuxcontainers.org](https://linuxcontain
   * type: defaults to veth.
   * ipv4: IPv4 address (can be string or array).
   * ipv4_gateway: container's default gateway.
+  * ipv6: IPv6 address (can be string or array).
+  * ipv6_gateway: container's default IPv6 gateway.
   * hwaddr: MAC.
   * restart: whether to restart the container after applying configuration.
 
