@@ -78,10 +78,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
       ips.each do |ip|
         begin
-          IPAddr.new(ip)
-        rescue ArgumentError
-          # FIXME Make sure a valid IPv6 is not accepted
-          raise ArgumentError, 'Invalid IPv4 address'
+          raise ArgumentError, 'Invalid IPv4 address' unless IPAddr.new(ip).ipv4?
         end
       end
     end
@@ -118,10 +115,7 @@ Puppet::Type.newtype(:lxc_interface) do
 
       ips.each do |ip|
         begin
-          IPAddr.new(ip)
-        rescue ArgumentError
-          # FIXME Make sure a valid IPv4 is not accepted
-          raise ArgumentError, 'Invalid IPv6 address'
+          raise ArgumentError, 'Invalid IPv6 address' unless IPAddr.new(ip).ipv6?
         end
       end
     end
