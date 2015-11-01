@@ -24,6 +24,24 @@ describe Puppet::Type.type(:lxc_interface), 'when defining the resource' do
     }.to raise_error
   end
 
+  it 'should fail with an invalid IPv6 address' do
+    expect {
+      Puppet::Type.type(:lxc_interface).new(
+        :name => 'public', :device_name => 'eth0', :container => 'lol_container', :type => 'veth',
+        :ipv6 => '2001:X0X0::1/128', :index => 1
+      )
+    }.to raise_error
+  end
+
+  it 'should not fail with a valid IPv6 address' do
+    expect {
+      Puppet::Type.type(:lxc_interface).new(
+        :name => 'public', :device_name => 'eth0', :container => 'lol_container', :type => 'veth',
+        :ipv6 => 'fe80::1/10', :index => 1
+      )
+    }.to_not raise_error
+  end
+
   it 'should fail with an invalid IPv4 address' do
     expect {
       Puppet::Type.type(:lxc_interface).new(

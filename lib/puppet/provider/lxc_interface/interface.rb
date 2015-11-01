@@ -15,6 +15,7 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
       @container.set_config_item("lxc.network.#{@resource[:index]}.vlan_id", @resource[:vlan_id]) unless @resource[:vlan_id].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.macvlan_mode", @resource[:macvlan_mode]) unless @resource[:macvlan_mode].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4", @resource[:ipv4].flatten) unless @resource[:ipv4].nil?
+      @container.set_config_item("lxc.network.#{@resource[:index]}.ipv6", @resource[:ipv6].flatten) unless @resource[:ipv6].nil?
       @container.set_config_item("lxc.network.#{@resource[:index]}.hwaddr", @resource[:hwaddr]) unless @resource[:hwaddr].nil?
       @container.save_config
       restart if @resource[:restart]
@@ -248,6 +249,59 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
     end
   end
 
+  def ipv6
+    begin
+      # This is a workaround until liblxc is realease with
+      # https://github.com/lxc/lxc/pull/332
+      # Once liblxc >= 1.1.0, LXC::version can be used to call the proper method
+      # hopefull the patch will be there for 1.1.0
+      define_container
+
+      unless @lxc_version
+        @lxc_version = LXC::version
+      end
+
+      if Puppet::Util::Package.versioncmp(@lxc_version,"1.1.0") < 0
+        fd = File.new(@container.config_file_name,'r')
+        content = fd.readlines
+        fd.close
+        matched = content.select { |c| c =~ /lxc.network/ }
+        index = matched.rindex("lxc.network.name = #{@resource[:device_name]}\n")
+        sliced = matched.slice(index..-1)
+        # shift first lxc.network.name which should be the one we're handling.
+        sliced.shift
+        next_block_idx = sliced.index(sliced.grep(/lxc.network.name/).first)
+        if next_block_idx.nil?
+          ips = sliced
+        else
+          ips = sliced[0..(next_block_idx - 1)]
+        end
+        aux = ips.select { |b| b =~ /lxc.network.ipv6 =/ }
+        aux.collect { |m| m.split('=').last.strip }
+      else
+        @container.config_item("lxc.network.#{@resource[:index]}.ipv6").first
+      end
+    rescue StandardError
+      # TODO: might be better to fail here instead of returning empty string which
+      # would trigger the setter
+      ""
+    end
+  end
+
+  def ipv6=(value)
+    begin
+      define_container
+      @container.clear_config_item("lxc.network.#{@resource[:index]}.ipv6")
+      # Why does it get an arrays of arrays?
+      @container.set_config_item("lxc.network.#{@resource[:index]}.ipv6",value.flatten)
+      @container.save_config
+      restart if @resource[:restart]
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
   def ipv4_gateway
     begin
       define_container
@@ -261,6 +315,27 @@ Puppet::Type.type(:lxc_interface).provide(:interface) do
     begin
       define_container
       @container.set_config_item("lxc.network.#{@resource[:index]}.ipv4.gateway",value)
+      @container.save_config
+      restart if @resource[:restart]
+      true
+    rescue LXC::Error
+      false
+    end
+  end
+
+  def ipv6_gateway
+    begin
+      define_container
+      @container.config_item("lxc.network.#{@resource[:index]}.ipv6.gateway")
+    rescue LXC::Error
+      ""
+    end
+  end
+
+  def ipv6_gateway=(value)
+    begin
+      define_container
+      @container.set_config_item("lxc.network.#{@resource[:index]}.ipv6.gateway",value)
       @container.save_config
       restart if @resource[:restart]
       true
